@@ -1,0 +1,14 @@
+{
+  "name": "softonoma-orchestrator",
+  "version": "0.16.1",
+  "description": "Softonoma multi-agent feature pipeline: BA/legacy analysis, prototyping, planning, parallel FE/BE/integrations implementation, QA/security/performance review, PR gate. Stack: Next.js/Vercel/Tailwind/MongoDB/Redis, Paymob, WebEngage, LiteAPI; legacy Laravel/Vue and Node/NestJS.",
+  "author": {
+    "name": "Softonoma"
+  },
+  "keywords": [
+    "agent-teams",
+    "orchestration",
+    "migration",
+    "nextjs"
+  ]
+}

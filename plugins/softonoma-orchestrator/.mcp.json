@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "clickup": { "type": "http", "url": "https://mcp.clickup.com/mcp" }
+  }
+}

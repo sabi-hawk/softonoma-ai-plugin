@@ -1,0 +1,10 @@
+{
+  "name": "softonoma-orchestrator-tests",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Automated test suite for the softonoma-orchestrator Claude Code plugin (scripts, hooks, static checks).",
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/scripts.spec.mjs tests/static.spec.mjs"
+  }
+}

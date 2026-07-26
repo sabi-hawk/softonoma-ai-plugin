@@ -1,0 +1,7 @@
+{
+  "env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1" },
+  "extraKnownMarketplaces": {
+    "softonoma": { "source": { "source": "github", "repo": "sabi-hawk/softonoma-ai-plugin" } }
+  },
+  "enabledPlugins": { "softonoma-orchestrator@softonoma": true }
+}

@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Local, machine-specific Claude Code settings
+.claude/settings.local.json
+**/.claude/settings.local.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
