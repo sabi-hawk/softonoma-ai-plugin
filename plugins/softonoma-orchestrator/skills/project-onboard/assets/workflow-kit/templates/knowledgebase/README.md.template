@@ -1,0 +1,45 @@
+# {{PROJECT_NAME}} — Knowledge Base
+
+The **single source of truth** for what we're building, why, and how. Read the relevant parts **before**
+writing code; **update** them in the same change as the code. (If `CLAUDE.md` is "how we work", this is
+"what we're building.")
+
+## Layout — three parts + the changelog
+
+```
+knowledgebase/
+├── README.md                     ← this index
+├── NN-requirements-changelog.md  ← dated log of every requirement (append FIRST, then build)
+├── modules/    ← DURABLE living knowledge: how each module works now (the real KB)
+│   ├── modules.md   (index)   and  one folder/doc per module (e.g. auth/, billing/)
+├── frds/       ← requirements MATURATION per feature (Draft → In Review → Approved → Promoted)
+│   └── README.md   (the FRD process + index)  — for large/multi-module initiatives
+└── reference/  ← ORIGIN / provenance: where it started (read-once, not day-to-day)
+    ├── product-overview.md · architecture-and-conventions.md · business-rules (v1) · testing-and-validation
+    └── source/  (original briefs, PRDs, brand assets, imported specs)
+```
+
+Sibling areas: **`../database/database.md`** (schema — kept current on every DB change) and
+**`../plans/`** (delivery: `upcoming → inprogress → done`).
+
+> **Adapt to the project.** A small project may only need `modules/` + the changelog (skip `frds/` until
+> a large initiative appears; keep `reference/` only if there's origin material worth preserving). Fill
+> everything from the **actual codebase**.
+
+## How the three parts relate (the workflow)
+1. **A requirement arrives** → append a dated line to the requirements changelog.
+2. For a **large/multi-module initiative**, consolidate it into an **FRD** in `frds/` and mature it
+   (Draft → Approved). Only an Approved FRD is **promoted to a plan** (`../plans/`). Small changes skip this.
+3. When a plan ships, its durable "how it works" knowledge is **folded into `modules/`** (+ `database.md`).
+   The FRD stays as the requirements-of-record; the module doc becomes **current truth**.
+4. `reference/` holds **origin** docs (initial overview, architecture, v1 rules, source) for provenance.
+
+> **In short:** `frds/` = the agreed *what* (per feature) · `modules/` = the durable *how it works* (per
+> module) · `reference/` = *where it started* · `NN-…changelog` = *the running record of asks*.
+
+## Rules for keeping it current
+- **New requirement?** Append to the requirements changelog *first*, then implement.
+- **Large/multi-module?** Fold it into its FRD in `frds/`; mature before promoting to a plan.
+- **Shipped a change?** Update the `modules/<module>` doc + `../database/database.md` in the same change.
+- Concise + factual; cite real file paths; link between docs with relative paths.
+- No secrets, no PII. Never delete changelog history — supersede with a new entry.

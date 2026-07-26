@@ -21,6 +21,10 @@ One prompt → legacy analysis → plan → parallel FE/BE build → parallel QA
 
 ## Install (step by step)
 
+> **Shortcut — install straight from GitHub (no clone needed):** do step 2 (enable agent teams), then inside a Claude Code session run
+> `/plugin marketplace add sabi-hawk/softonoma-ai-plugin`, `/plugin install softonoma-orchestrator@softonoma`, `/reload-plugins`.
+> Update later with `/plugin marketplace update softonoma`. The clone-based flow below is only needed when developing the plugin itself.
+
 The install flow is the **same on Windows, macOS and Linux**. Only the clone folder and shell differ. Do it once per machine.
 
 ### 1. Pick a folder and clone the repo

@@ -1,0 +1,12 @@
+{
+  "name": "softonoma",
+  "owner": { "name": "Softonoma" },
+  "plugins": [
+    {
+      "name": "softonoma-orchestrator",
+      "source": "./plugins/softonoma-orchestrator",
+      "description": "Softonoma multi-agent feature pipeline (13 agents, team wizard, project onboarding, coverage gates).",
+      "category": "development"
+    }
+  ]
+}

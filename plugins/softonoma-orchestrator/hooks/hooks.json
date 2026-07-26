@@ -9,6 +9,15 @@
             "command": "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-guard.sh"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/block-secret-writes.mjs"
+          }
+        ]
       }
     ],
     "TaskCompleted": [
