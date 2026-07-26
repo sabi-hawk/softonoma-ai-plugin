@@ -8,7 +8,7 @@ Right now it contains a single Claude Code plugin, **`softonoma-orchestrator`**.
 
 | Path | What it is |
 |------|-----------|
-| [`plugins/softonoma-orchestrator/`](plugins/softonoma-orchestrator) | Multi-agent feature-delivery pipeline for Claude Code (13 agents, 82 skills, hooks, coverage/PR gates). |
+| [`plugins/softonoma-orchestrator/`](plugins/softonoma-orchestrator) | Multi-agent feature-delivery pipeline for Claude Code (13 agents, 84 skills, hooks, coverage/PR gates). |
 
 ## `softonoma-orchestrator`
 
@@ -22,17 +22,17 @@ It drives a feature end-to-end: BA & legacy analysis → prototyping → plannin
 
 `ba-analyst`, `legacy-analyst`, `prototype-builder`, `planner`, `frontend-dev`, `backend-dev`, `integrations-dev`, `unit-test-engineer`, `e2e-playwright`, `qa-reviewer`, `security-reviewer`, `performance-reviewer`, `devops-vercel`.
 
-### Skills (82)
+### Skills (84)
 
 Grouped roughly by area:
 
 - **Orchestration & workflow** — `project-onboard`, `agent-team-orc`, `orchestrate-feature`, `plan-lifecycle`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `to-spec`, `to-tickets`, `frd-builder`, `status`, `help`.
 - **Frontend / Next.js / React** — `nextjs-app-router-patterns`, `nextjs-typescript`, `next-dev-loop`, `next-cache-components-optimizer`, `react-best-practices`, `react-state-management`, `frontend-design`, `responsive-design`, `design-system-patterns`, `tailwind-design-system`, `web-design-guidelines`.
 - **Backend / data** — `supabase-patterns`, `prisma-postgres`, `laravel-best-practices`, `laravel-database-optimization`, `laravel-inertia-react`, `laravel-owasp-security`, `laravel-queues`, `nestjs-best-practices`, `php-best-practices`, `mongodb-connection`, `mongodb-query-optimizer`, `mongodb-schema-design`, `redis-core`, `redis-connections`, `redis-security`, `database-migration`.
-- **Integrations** — `paymob-integration`, `webengage-integration`, `liteapi-integration`, `better-auth-best-practices`, `better-auth-create-auth`, `better-auth-security`, `better-auth-two-factor`.
+- **Integrations** — `xero-integration`, `paymob-integration`, `webengage-integration`, `liteapi-integration`, `better-auth-best-practices`, `better-auth-create-auth`, `better-auth-security`, `better-auth-two-factor`.
 - **Architecture & design** — `architecture-patterns`, `api-design-principles`, `codebase-design`, `codebase-research`, `domain-modeling`, `composition-patterns`, `improve-codebase-architecture`.
 - **Quality, testing & review** — `test-driven-development`, `webapp-testing`, `playwright-cli`, `find-bugs`, `diagnosing-bugs`, `systematic-debugging`, `requesting-code-review`, `receiving-code-review`, `review-pr`, `pr-writer`, `commit`, `verification-before-completion`, `setup-pre-commit`, `dependency-upgrade`.
-- **Security** — `security-audit`, `sast-configuration`, `gha-security-review`, `sentry-security-review`, `pci-compliance`, `threat-mitigation-mapping`.
+- **Security** — `production-launch`, `security-audit`, `sast-configuration`, `gha-security-review`, `sentry-security-review`, `pci-compliance`, `threat-mitigation-mapping`.
 - **Knowledge & tooling** — `brainstorming`, `kb-builder`, `product-kb`, `skill-writer`, `skill-scanner`, `clickup-workflows`, `git-worktree-discipline`, `prototype`, `vercel-optimize`.
 
 ### Layout
@@ -43,7 +43,7 @@ plugins/softonoma-orchestrator/
 │   ├── plugin.json          # plugin manifest
 │   └── marketplace.json     # marketplace entry
 ├── agents/                  # 13 subagent definitions
-├── skills/                  # 82 skills
+├── skills/                  # 84 skills
 ├── hooks/hooks.json         # lifecycle hooks
 ├── scripts/                 # coverage/task gates, worktree helpers, team monitor
 ├── tests/                   # plugin tests

@@ -334,6 +334,8 @@ Invoke these softonoma-orchestrator plugin skills (via the Skill tool) when they
 - **next-dev-loop** — verify a change actually works at runtime, not just that it type-checks/compiles.
 - **next-cache-components-optimizer** — diagnose and optimize Next.js Cache Components (static shell + in-app navigation).
 - **test-driven-development** — write the failing test first, then the code — red/green/refactor.
+- **supabase-patterns** — Supabase Postgres: RLS-first migrations, @supabase/ssr auth, poolers, storage (both full-Supabase and Supabase-behind-Prisma shapes).
+- **prisma-postgres** — Prisma on Postgres: multifile schema, migration discipline, tenant scoping, DTO/where parity.
 - **mongodb-schema-design** — MongoDB data modeling: embed vs reference, indexes, anti-patterns.
 - **mongodb-query-optimizer** — diagnose and fix slow MongoDB queries and index usage.
 - **mongodb-connection** — MongoDB connection/pooling on serverless (Vercel).

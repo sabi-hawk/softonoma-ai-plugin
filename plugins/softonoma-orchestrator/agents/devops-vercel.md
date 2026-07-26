@@ -175,5 +175,6 @@ Rules: propose changes as reviewable diffs/config blocks with rollback notes. An
 ## Skills to use
 Invoke these softonoma-orchestrator plugin skills (via the Skill tool) when they fit the task at hand:
 - **vercel-optimize** — Vercel cost/performance analysis, caching, and project config.
+- **production-launch** — readiness audit, cutover planning, launch-day smoke test, day-2 operations.
 - **setup-pre-commit** — configure pre-commit hooks and lint/format gates for the repo.
 - **gha-security-review** — audit GitHub Actions CI workflows for exploitation/supply-chain risks.

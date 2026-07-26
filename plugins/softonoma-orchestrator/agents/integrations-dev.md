@@ -86,6 +86,7 @@ Invoke these softonoma-orchestrator plugin skills (via the Skill tool) when they
 - **better-auth-two-factor** — add TOTP/OTP MFA on sensitive auth flows.
 - **better-auth-security** — harden auth: rate limiting, CSRF, trusted origins, cookies.
 - **systematic-debugging** — root-cause failing third-party API/webhook integrations.
+- **xero-integration** — Xero accounting sync: OAuth2/tenants, idempotent upserts on stored GUIDs, rate limits, webhooks, capability gaps.
 - **paymob-integration** — Paymob payment flow, Intention API, and mandatory HMAC callback verification.
 - **webengage-integration** — WebEngage user/event tracking via the server-side REST API (correct data center).
 - **liteapi-integration** — LiteAPI hotel search → prebook → book flow with price/policy re-validation.

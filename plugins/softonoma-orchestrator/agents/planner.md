@@ -19,6 +19,7 @@ Process:
 ## Skills to use
 Invoke these softonoma-orchestrator plugin skills (via the Skill tool) when they fit the task at hand:
 - **plan-lifecycle** — the plans/{upcoming,in-progress,done} workflow and plan file format.
+- **production-launch** — when a launch/go-live is in scope: readiness audit, cutover plan, smoke test, day-2.
 - **clickup-workflows** — create implementation tasks and sync status from the FRD.
 - **writing-plans** — write clear, executable implementation plans.
 - **executing-plans** — drive a plan to completion in disciplined, verifiable steps.
