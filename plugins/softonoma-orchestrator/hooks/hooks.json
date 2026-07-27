@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/worktree-guard.sh"
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/worktree-guard.sh"
           }
         ]
       },
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/block-secret-writes.mjs"
+            "command": "node ${CLAUDE_PLUGIN_ROOT}/scripts/block-secret-writes.mjs"
           }
         ]
       }
@@ -25,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/task-gate.sh"
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/task-gate.sh"
           }
         ]
       }

@@ -154,13 +154,16 @@ test('hooks.json + plugin manifests: valid JSON, referenced scripts exist and ar
   }
   assert.ok(commands.length >= 2, 'expected several hook commands');
   for (const cmd of commands) {
-    const rel = cmd.replace('${CLAUDE_PLUGIN_ROOT}', '').replace(/^[/\\]/, '');
+    // Commands must be interpreter-prefixed ("node <path>" / "bash <path>") so they
+    // survive plugin installers that strip Unix exec bits from the cache copy.
+    const m = cmd.match(/^(node|bash) (\S+)$/);
+    assert.ok(m, `hook command must be "node|bash \${CLAUDE_PLUGIN_ROOT}/<script>": ${cmd}`);
+    const [, interpreter, scriptPath] = m;
+    const rel = scriptPath.replace('${CLAUDE_PLUGIN_ROOT}', '').replace(/^[/\\]/, '');
     const abs = path.join(ROOT, rel);
     assert.ok(fs.existsSync(abs), `hook script must exist: ${cmd}`);
+    assert.equal(interpreter, rel.endsWith('.sh') ? 'bash' : 'node', `interpreter must match script type: ${cmd}`);
     const first = fs.readFileSync(abs, 'utf8').split('\n')[0];
-    assert.match(first, /^#!/, `hook script must have a shebang (executable): ${rel}`);
-    if (process.platform !== 'win32') {
-      assert.ok(fs.statSync(abs).mode & 0o111, `hook script must be executable: ${rel}`);
-    }
+    assert.match(first, /^#!/, `hook script must have a shebang: ${rel}`);
   }
 });
