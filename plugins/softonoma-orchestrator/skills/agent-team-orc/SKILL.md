@@ -47,6 +47,15 @@ Ask exactly two questions before touching the filesystem — both via AskUserQue
 
 **Automatic mode:** read ONLY these, in this order, stopping as soon as you have enough signal: `.claude/teams/*.json` (existing teams), `CLAUDE.md`, `README.md`, `package.json`/`composer.json`. Do NOT crawl source folders. Present a 2–3 line project summary, then the recommended roster as a MULTI-SELECT AskUserQuestion with the recommendations pre-selected and reasons in the descriptions ("Laravel legacy referenced → legacy-analyst"); user confirms or adjusts the selection.
 
+Both modes, after the roster pick, ask the **E2E question** (AskUserQuestion): "Include browser
+end-to-end testing (Playwright) in this project's day-to-day pipeline?" → options: **Yes — every
+user-facing feature gets E2E specs (Recommended for products)** / **No — unit/integration tests
+only** / Other. Yes → ensure `e2e-playwright` is in the roster and set `"e2e": { "playwright": true }`
+in defaults (orchestrate-feature's test wave then always runs it; if the repo has no Playwright
+setup yet, the first pipeline run scaffolds it via the e2e-playwright agent). No → keep
+`e2e-playwright` out of the roster and set `"e2e": { "playwright": false }`; it stays available
+on-demand.
+
 Both modes: optionally set default teammate model (default sonnet) and max parallel (default 5).
 
 ## Phase 3 — Save the template
