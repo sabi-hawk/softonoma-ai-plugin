@@ -72,6 +72,19 @@ git clone https://github.com/sabi-hawk/softonoma-ai-plugin.git
 /reload-plugins
 ```
 
+## Updating (every developer machine)
+
+The plugin is installed per machine, so updates are pulled with two commands from any
+terminal (not a `git pull` of a project repo):
+
+```bash
+claude plugin marketplace update softonoma
+claude plugin update softonoma-orchestrator@softonoma
+```
+
+Then restart any open Claude Code sessions to load the new version. Check what's installed
+anytime with `claude plugin list`.
+
 Full step-by-step instructions for Windows, macOS and Linux — plus how to update and reload — are in [`plugins/softonoma-orchestrator/README.md`](plugins/softonoma-orchestrator/README.md).
 
 ## Contributing

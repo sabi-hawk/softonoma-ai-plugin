@@ -129,6 +129,15 @@ If a reload alone doesn't pick up the new version, reinstall:
 /reload-plugins
 ```
 
+**Or from any terminal (no session needed — works for GitHub installs too):**
+
+```bash
+claude plugin marketplace update softonoma
+claude plugin update softonoma-orchestrator@softonoma
+```
+
+Then restart open Claude Code sessions to apply. `claude plugin list` shows the installed version.
+
 ## Reloading plugins
 
 To re-apply plugin changes in a running session at any time (after an update, or after editing a skill/agent locally):
