@@ -108,6 +108,18 @@ test('worktree-guard.sh: allows the same edit inside a linked worktree (exit 0)'
   assert.equal(r.code, 0, 'edits inside a worktree must be allowed');
 });
 
+test('worktree-guard.sh: allows an edit TARGETING a worktree file from a primary-checkout session (exit 0)', async () => {
+  const base = tmp('guard4');
+  const repo = initRepo(path.join(base, 'myrepo'));
+  const created = await sh(path.join(SCRIPTS, 'worktree.sh'), { args: ['new', 'feat-t'], cwd: repo });
+  assert.equal(created.code, 0, created.err);
+  const wt = path.join(base, 'myrepo-worktrees', 'feat-t');
+  // Session runs from the primary checkout (on main), but the file being edited is in the worktree.
+  const input = JSON.stringify({ tool_name: 'Edit', tool_input: { file_path: path.join(wt, 'src', 'app.ts') } });
+  const r = await sh(path.join(SCRIPTS, 'worktree-guard.sh'), { input, env: { CLAUDE_PROJECT_DIR: repo } });
+  assert.equal(r.code, 0, 'target location decides — worktree files are editable from any session cwd');
+});
+
 test('worktree-guard.sh: allows .claude/ and plans/ paths on main (exit 0)', async () => {
   const base = tmp('guard3');
   const repo = initRepo(path.join(base, 'myrepo'));

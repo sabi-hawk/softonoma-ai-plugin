@@ -27,7 +27,8 @@ templates with `{{PLACEHOLDER}}`s) — **adapt, don't transcribe**.
    (default Softonoma stack: Next.js App Router + TypeScript strict + Tailwind +
    Supabase Postgres/Auth/RLS, or NestJS + Prisma for a standalone API — see
    `supabase-patterns` / `prisma-postgres` skills), deploy target (Vercel default),
-   repo name/remote, gate for "done".
+   repo name/remote, gate for "done", and **browser E2E testing (Playwright)? yes/no**
+   — yes wires Playwright config + the `e2e-playwright` agent into the team from day one.
 2. **Scaffold.** Create the repo (git init, default branch), framework scaffold,
    lint/typecheck/test scripts, `.env.example`, `.gitignore` (secrets patterns), CI if asked.
 3. **Install the workflow** — run Mode B steps 3–5 on the fresh scaffold.
@@ -42,7 +43,10 @@ Follow `assets/workflow-kit/INSTALL.md` (authoritative detail). Condensed:
    run/test/build/lint commands, git conventions, sensitive files.
 2. **Confirm only what you can't infer** (one batched ask): how requirements arrive
    (chat vs tickets vs FRDs → how heavy the plan lifecycle should be), the "done" gate,
-   git identity/push policy, hard rules that must never break.
+   git identity/push policy, hard rules that must never break, and **browser E2E testing
+   (Playwright)? yes/no** — yes means: scaffold Playwright (config, auth helper, first smoke
+   spec, `test:e2e` script) if absent, and include `e2e-playwright` in the saved team roster
+   so every user-facing feature gets E2E specs in the pipeline's test wave.
 3. **Generate `.claude/` + root `CLAUDE.md`** from `assets/workflow-kit/templates/`,
    filling placeholders with real values and rewriting prose for *this* project.
    Drop what doesn't apply (no DB → no `database/` or `db-change`; no UI → no
