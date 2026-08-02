@@ -34,7 +34,8 @@ Then run Phase 0 onward with those answers.
 | prototype-builder | Feature needs visual stakeholder sign-off first |
 | planner | Always |
 | frontend-dev | Any UI work |
-| backend-dev | Any server/data work |
+| backend-dev | Any JS/TS server/data work (Next.js, NestJS) |
+| python-backend-dev | Any Python/FastAPI server/data work |
 | integrations-dev | Paymob, WebEngage, LiteAPI, or other third-party/webhook work |
 | unit-test-engineer | Always — testing wave, enforces 90%/100% coverage gate |
 | e2e-playwright | Always for user-facing features — Playwright E2E per acceptance criteria |

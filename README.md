@@ -8,7 +8,7 @@ Right now it contains a single Claude Code plugin, **`softonoma-orchestrator`**.
 
 | Path | What it is |
 |------|-----------|
-| [`plugins/softonoma-orchestrator/`](plugins/softonoma-orchestrator) | Multi-agent feature-delivery pipeline for Claude Code (13 agents, 84 skills, hooks, coverage/PR gates). |
+| [`plugins/softonoma-orchestrator/`](plugins/softonoma-orchestrator) | Multi-agent feature-delivery pipeline for Claude Code (14 agents, 85 skills, hooks, coverage/PR gates). |
 
 ## `softonoma-orchestrator`
 
@@ -18,17 +18,17 @@ It drives a feature end-to-end: BA & legacy analysis → prototyping → plannin
 
 **Starting or adopting a project?** The `project-onboard` skill is the entry point. It covers three modes: **(A)** a brand-new project the AI scaffolds from scratch, **(B)** an existing repo that has no AI workflow yet (learn the codebase → generate a tailored `CLAUDE.md` + `.claude/` → seed the knowledge base from real code → wire the gates), and **(C)** a multi-repo product sharing one `.claude/` via a workspace repo. It vendors the Softonoma **AI Workflow Kit** templates (knowledge base, rules, review agents, feature-workflow loop, secret-blocking hook) so any project ends up on the same disciplined setup.
 
-### Agents (13)
+### Agents (14)
 
-`ba-analyst`, `legacy-analyst`, `prototype-builder`, `planner`, `frontend-dev`, `backend-dev`, `integrations-dev`, `unit-test-engineer`, `e2e-playwright`, `qa-reviewer`, `security-reviewer`, `performance-reviewer`, `devops-vercel`.
+`ba-analyst`, `legacy-analyst`, `prototype-builder`, `planner`, `frontend-dev`, `backend-dev`, `python-backend-dev`, `integrations-dev`, `unit-test-engineer`, `e2e-playwright`, `qa-reviewer`, `security-reviewer`, `performance-reviewer`, `devops-vercel`.
 
-### Skills (84)
+### Skills (85)
 
 Grouped roughly by area:
 
 - **Orchestration & workflow** — `project-onboard`, `agent-team-orc`, `orchestrate-feature`, `plan-lifecycle`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `to-spec`, `to-tickets`, `frd-builder`, `status`, `help`.
 - **Frontend / Next.js / React** — `nextjs-app-router-patterns`, `nextjs-typescript`, `next-dev-loop`, `next-cache-components-optimizer`, `react-best-practices`, `react-state-management`, `frontend-design`, `responsive-design`, `design-system-patterns`, `tailwind-design-system`, `web-design-guidelines`.
-- **Backend / data** — `supabase-patterns`, `prisma-postgres`, `laravel-best-practices`, `laravel-database-optimization`, `laravel-inertia-react`, `laravel-owasp-security`, `laravel-queues`, `nestjs-best-practices`, `php-best-practices`, `mongodb-connection`, `mongodb-query-optimizer`, `mongodb-schema-design`, `redis-core`, `redis-connections`, `redis-security`, `database-migration`.
+- **Backend / data** — `supabase-patterns`, `prisma-postgres`, `fastapi-python`, `laravel-best-practices`, `laravel-database-optimization`, `laravel-inertia-react`, `laravel-owasp-security`, `laravel-queues`, `nestjs-best-practices`, `php-best-practices`, `mongodb-connection`, `mongodb-query-optimizer`, `mongodb-schema-design`, `redis-core`, `redis-connections`, `redis-security`, `database-migration`.
 - **Integrations** — `xero-integration`, `paymob-integration`, `webengage-integration`, `liteapi-integration`, `better-auth-best-practices`, `better-auth-create-auth`, `better-auth-security`, `better-auth-two-factor`.
 - **Architecture & design** — `architecture-patterns`, `api-design-principles`, `codebase-design`, `codebase-research`, `domain-modeling`, `composition-patterns`, `improve-codebase-architecture`.
 - **Quality, testing & review** — `test-driven-development`, `webapp-testing`, `playwright-cli`, `find-bugs`, `diagnosing-bugs`, `systematic-debugging`, `requesting-code-review`, `receiving-code-review`, `review-pr`, `pr-writer`, `commit`, `verification-before-completion`, `setup-pre-commit`, `dependency-upgrade`.
@@ -42,8 +42,8 @@ plugins/softonoma-orchestrator/
 ├── .claude-plugin/
 │   ├── plugin.json          # plugin manifest
 │   └── marketplace.json     # marketplace entry
-├── agents/                  # 13 subagent definitions
-├── skills/                  # 84 skills
+├── agents/                  # 14 subagent definitions
+├── skills/                  # 85 skills
 ├── hooks/hooks.json         # lifecycle hooks
 ├── scripts/                 # coverage/task gates, worktree helpers, team monitor
 ├── tests/                   # plugin tests
