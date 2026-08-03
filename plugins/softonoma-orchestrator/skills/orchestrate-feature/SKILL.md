@@ -39,15 +39,22 @@ Then run Phase 0 onward with those answers.
 | integrations-dev | Paymob, WebEngage, LiteAPI, or other third-party/webhook work |
 | unit-test-engineer | Always — testing wave, enforces 90%/100% coverage gate |
 | e2e-playwright | Always for user-facing features — Playwright E2E per acceptance criteria |
+| code-reviewer | Always — reviews the CODE (correctness, layering, blast radius, scope creep); qa-reviewer reviews behaviour, this reviews the diff |
 | qa-reviewer | Always |
 | security-reviewer | Always (mandatory for auth/payments/user data) |
 | performance-reviewer | Always |
+| browser-verifier | Always for user-facing features — drives the REAL running app to prove the feature works. Cheaper than e2e-playwright; use it when there is no E2E infra, or alongside it as the acceptance gate |
 | devops-vercel | Infra/deploy/config tasks — usually solo, outside this pipeline |
 
 Feature-type presets:
-- **Migration (e.g. Protectra/Blanka parity)**: legacy-analyst → planner → frontend+backend(+integrations) → 3 reviewers.
-- **New feature (e.g. HolidayMarket)**: ba-analyst → (prototype-builder if visual sign-off needed) → planner → frontend+backend(+integrations) → 3 reviewers.
+- **Migration (e.g. Protectra/Blanka parity)**: legacy-analyst → planner → frontend+backend(+integrations) → 4 reviewers → browser-verifier.
+- **New feature (e.g. HolidayMarket)**: ba-analyst → (prototype-builder if visual sign-off needed) → planner → frontend+backend(+integrations) → 4 reviewers → browser-verifier.
 - **Infra fix**: devops-vercel alone; skip the pipeline.
+
+**Nothing is "done" before it has been run.** Lint, build, tests and the review wave all read code;
+only browser-verifier proves the feature actually works. Do not report a user-facing feature complete
+on green gates alone — and if browser tooling is unavailable, say so explicitly in the PR rather than
+letting an unverified feature read as verified.
 
 ## Phase 0 — Setup
 1. Resolve the team from the PRIMARY checkout: `MAIN_ROOT=$(dirname "$(git rev-parse --git-common-dir)")`; teams live at `$MAIN_ROOT/.claude/teams/` (NEVER the worktree own .claude/). If the prompt names one ("team <name>: ..." or "using team <name>"), load `$MAIN_ROOT/.claude/teams/<name>.json`. If no name given: exactly one team file exists → use it; several exist → AskUserQuestion with the team names as options; none exist → suggest running /softonoma-orchestrator:agent-team-orc, then fall back to the roster table below. Use the team's roster, project summary, and defaults (teammate model, max parallel); spawn ONLY roster agents relevant to this feature.
@@ -76,7 +83,10 @@ Ledger discipline (lead's job, Phases 3–5): every claim/completion/block is a 
 All implementation tasks complete → spawn "unit-tests" (unit-test-engineer) and "e2e" (e2e-playwright). Gate: changed-files coverage ≥ 90% (100% on business-logic modules) and all E2E scenarios mapped 1:1 to acceptance criteria and green. Coverage gaming (assertion-free tests, unjustified exclusions) is a BLOCKER.
 
 ## Phase 4b — Review wave (parallel)
-Test wave green → spawn "qa", "security", "performance". BLOCKER/MAJOR findings become new tasks; loop Phase 3→4 until zero blockers.
+Test wave green → spawn "code-review" (code-reviewer), "qa", "security", "performance". BLOCKER/MAJOR findings become new tasks; loop Phase 3→4 until zero blockers. These four all read code — none of them proves the feature runs, which is Phase 4c.
+
+## Phase 4c — Verify for real (the acceptance gate)
+Zero blockers → spawn "verify" (browser-verifier) against the worktree's dev server (port from `.worktree-port`), with the acceptance criteria from the spec/KB doc as its checklist. It reports PASS/FAIL/BLOCKED per criterion. A FAIL becomes a task and loops back to Phase 3. **Do not skip this for a user-facing feature and do not substitute green tests for it.** If browser tooling genuinely is not available, that is not a pass — record it as unverified in the PR body, explicitly, so the human knows to walk the checklist themselves. Against production data the verifier is read-only; tell it so in its spawn prompt.
 
 ## Phase 5 — PR (autonomous up to the merge decision)
 Run lint, typecheck, tests, build, and `scripts/coverage-gate.sh <base-branch>` — if any fails, loop back to Phase 3→4 and fix it yourself; the PR is not created while the coverage gate fails. When everything is green, create the PR autonomously (summary, parity/acceptance checklist result, review findings + resolutions, test evidence, prototype path if any). This is the task's finish line: present the PR link + preview URL. **Merging is a release/business decision that stays with the human** — never merge yourself. Then proceed straight into Phase 6 cleanup (it's non-destructive and doesn't touch main).

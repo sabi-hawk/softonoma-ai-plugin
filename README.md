@@ -18,9 +18,9 @@ It drives a feature end-to-end: BA & legacy analysis → prototyping → plannin
 
 **Starting or adopting a project?** The `project-onboard` skill is the entry point. It covers three modes: **(A)** a brand-new project the AI scaffolds from scratch, **(B)** an existing repo that has no AI workflow yet (learn the codebase → generate a tailored `CLAUDE.md` + `.claude/` → seed the knowledge base from real code → wire the gates), and **(C)** a multi-repo product sharing one `.claude/` via a workspace repo. It vendors the Softonoma **AI Workflow Kit** templates (knowledge base, rules, review agents, feature-workflow loop, secret-blocking hook) so any project ends up on the same disciplined setup.
 
-### Agents (14)
+### Agents (16)
 
-`ba-analyst`, `legacy-analyst`, `prototype-builder`, `planner`, `frontend-dev`, `backend-dev`, `python-backend-dev`, `integrations-dev`, `unit-test-engineer`, `e2e-playwright`, `qa-reviewer`, `security-reviewer`, `performance-reviewer`, `devops-vercel`.
+`ba-analyst`, `legacy-analyst`, `prototype-builder`, `planner`, `frontend-dev`, `backend-dev`, `python-backend-dev`, `integrations-dev`, `unit-test-engineer`, `e2e-playwright`, `qa-reviewer`, `security-reviewer`, `performance-reviewer`, `code-reviewer`, `browser-verifier`, `devops-vercel`.
 
 ### Skills (85)
 
@@ -42,7 +42,7 @@ plugins/softonoma-orchestrator/
 ├── .claude-plugin/
 │   ├── plugin.json          # plugin manifest
 │   └── marketplace.json     # marketplace entry
-├── agents/                  # 14 subagent definitions
+├── agents/                  # 16 subagent definitions
 ├── skills/                  # 85 skills
 ├── hooks/hooks.json         # lifecycle hooks
 ├── scripts/                 # coverage/task gates, worktree helpers, team monitor
