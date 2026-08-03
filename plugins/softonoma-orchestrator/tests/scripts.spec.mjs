@@ -123,7 +123,7 @@ test('worktree-guard.sh: allows an edit TARGETING a worktree file from a primary
 test('worktree-guard.sh: allows .claude/ and plans/ paths on main (exit 0)', async () => {
   const base = tmp('guard3');
   const repo = initRepo(path.join(base, 'myrepo'));
-  for (const fp of ['.claude/settings.json', 'plans/upcoming/feature.md', 'CLAUDE.md', 'README.md']) {
+  for (const fp of ['.claude/settings.json', 'plans/upcoming/feature.md', 'CLAUDE.md', 'README.md', 'docs/runbook.md', 'docs/setup/guide.txt', 'NOTES.md']) {
     const input = JSON.stringify({ tool_name: 'Write', tool_input: { file_path: fp } });
     const r = await sh(path.join(SCRIPTS, 'worktree-guard.sh'), { input, env: { CLAUDE_PROJECT_DIR: repo } });
     assert.equal(r.code, 0, `${fp} on main should be allowed`);

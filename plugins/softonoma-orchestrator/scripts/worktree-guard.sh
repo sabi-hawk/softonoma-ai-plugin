@@ -6,7 +6,7 @@
 set -u
 INPUT=$(cat) # hook payload
 # Allow docs/config writes on main (code needs a worktree; config does not)
-if printf '%s' "$INPUT" | grep -Eq '"file_path"[[:space:]]*:[[:space:]]*"[^"]*(\.claude/|plans/|knowledge-base/|prototypes/|CLAUDE\.md|README\.md)'; then
+if printf '%s' "$INPUT" | grep -Eq '"file_path"[[:space:]]*:[[:space:]]*"[^"]*(\.claude/|plans/|knowledge-base/|prototypes/|docs/|[^"]*\.md")'; then
   exit 0
 fi
 BASE="${CLAUDE_PROJECT_DIR:-$PWD}"
@@ -19,6 +19,7 @@ if [ -n "$FP" ]; then
   [ -d "$D" ] && DIR="$D"
 fi
 git -C "$DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
+[ "$(git -C "$DIR" config --get softonoma.worktreeGuard 2>/dev/null)" = "off" ] && exit 0
 GD=$(git -C "$DIR" rev-parse --git-dir 2>/dev/null); GCD=$(git -C "$DIR" rev-parse --git-common-dir 2>/dev/null)
 [ "$GD" != "$GCD" ] && exit 0   # target is inside a linked worktree -> fine
 BR=$(git -C "$DIR" branch --show-current 2>/dev/null)
