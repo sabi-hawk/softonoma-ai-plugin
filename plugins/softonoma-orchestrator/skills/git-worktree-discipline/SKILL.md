@@ -27,3 +27,11 @@ If launched from Vibe Kanban or Claude Squad the worktree already exists — do 
 - Commit early and often on the feature branch; conventional messages (`feat:`, `fix:`, `test:`, `refactor:`) with the plan task ID, e.g. `feat(T3): booking status API`.
 - Never rebase/force-push a branch another teammate has checked out; coordinate via the lead.
 - After the human confirms the PR is merged: `worktree.sh remove <feature>`, which also runs `git worktree prune`. Stale worktrees older than the done plan are flagged by `worktree.sh list`.
+
+## Guard scope (what the worktree-guard does NOT block)
+
+The PreToolUse guard protects **code** on protected branches (`main|master|develop|staging|production`)
+in a primary checkout. It never blocks: files inside linked worktrees; `.claude/`, `plans/`,
+`knowledge-base/`, `prototypes/`, `docs/` paths; or any `*.md` file — docs aren't code.
+Repos that should never be guarded (e.g. a pure documentation repo) opt out once with:
+`git config softonoma.worktreeGuard off`.
