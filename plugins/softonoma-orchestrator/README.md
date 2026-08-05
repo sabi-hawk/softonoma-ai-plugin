@@ -232,5 +232,5 @@ CLAUDE.md                  # project conventions — teammates load it automatic
 ## Agent roster
 
 Core pipeline: ba-analyst, legacy-analyst, planner, frontend-dev, backend-dev, qa-reviewer, security-reviewer, performance-reviewer.
-On-demand: prototype-builder (Figma/HTML prototypes), integrations-dev (Paymob/WebEngage/LiteAPI), devops-vercel (infra, log drains, deploys), unit-test-engineer + e2e-playwright (test wave).
+On-demand: prototype-builder (Figma/HTML prototypes), integrations-dev (Paymob/WebEngage/LiteAPI), devops-vercel (infra, log drains, deploys), unit-test-engineer + e2e-playwright (test wave), db-performance-reviewer (DB/API performance gate on Prisma/Postgres work — run after every implementation wave that touches a schema, query, or endpoint).
 The lead spawns only what the feature needs — 3–5 active teammates max.
