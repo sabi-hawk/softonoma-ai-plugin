@@ -33,7 +33,8 @@ Then run Phase 0 onward with those answers.
 | legacy-analyst | Migration/parity work from Laravel/Vue or Node/NestJS legacy |
 | prototype-builder | Feature needs visual stakeholder sign-off first |
 | planner | Always |
-| frontend-dev | Any UI work |
+| frontend-dev | Any web UI work |
+| mobile-dev | Any React Native / Expo (iOS/Android) app work |
 | backend-dev | Any JS/TS server/data work (Next.js, NestJS) |
 | python-backend-dev | Any Python/FastAPI server/data work |
 | integrations-dev | Paymob, WebEngage, LiteAPI, or other third-party/webhook work |

@@ -7,7 +7,7 @@
     {
       "name": "softonoma-orchestrator",
       "source": "./",
-      "description": "Softonoma multi-agent feature pipeline (13 agents, team wizard, coverage gates).",
+      "description": "Softonoma multi-agent feature pipeline (18 agents, team wizard, coverage gates).",
       "category": "development"
     }
   ]
