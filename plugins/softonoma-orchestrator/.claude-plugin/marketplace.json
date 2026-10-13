@@ -1,6 +1,8 @@
 {
   "name": "softonoma",
-  "owner": { "name": "Softonoma" },
+  "owner": {
+    "name": "Softonoma"
+  },
   "plugins": [
     {
       "name": "softonoma-orchestrator",

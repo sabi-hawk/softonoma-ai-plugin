@@ -179,3 +179,55 @@ test('hooks.json + plugin manifests: valid JSON, referenced scripts exist and ar
     assert.match(first, /^#!/, `hook script must have a shebang: ${rel}`);
   }
 });
+
+// ---------------------------------------------------------------- task-gate.sh
+// Project-type aware TaskCompleted gate: blocks only on real quality failures,
+// never on environment gaps (missing deps/tools), and skips unknown projects.
+const GATE = path.join(SCRIPTS, 'task-gate.sh');
+
+test('task-gate: repo with no recognised project type is allowed', async () => {
+  const dir = tmp('gate-none');
+  const r = await sh(GATE, { cwd: dir, input: '{}' });
+  assert.equal(r.code, 0, r.err);
+});
+
+test('task-gate: JS repo without node_modules is skipped (env gap, not a failure)', async () => {
+  const dir = tmp('gate-js-nodeps');
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ scripts: { lint: 'definitely-not-a-real-binary' } }));
+  const r = await sh(GATE, { cwd: dir, input: '{}' });
+  assert.equal(r.code, 0, 'must not block when deps are not installed:\n' + r.err);
+});
+
+test('task-gate: JS repo with node_modules and a genuinely failing lint blocks', async () => {
+  const dir = tmp('gate-js-fail');
+  fs.mkdirSync(path.join(dir, 'node_modules'));
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ scripts: { lint: 'node -e "console.error(\'lint error\'); process.exit(1)"' } }));
+  const r = await sh(GATE, { cwd: dir, input: '{}' });
+  assert.equal(r.code, 2, 'real lint failure must block');
+  assert.match(r.err, /lint/);
+});
+
+test('task-gate: JS repo whose lint fails only because the tool is missing is skipped', async () => {
+  const dir = tmp('gate-js-envgap');
+  fs.mkdirSync(path.join(dir, 'node_modules'));
+  fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify({ scripts: { lint: 'definitely-not-a-real-binary --check' } }));
+  const r = await sh(GATE, { cwd: dir, input: '{}' });
+  assert.equal(r.code, 0, 'missing tool must skip, not block:\n' + r.err);
+});
+
+test('task-gate: Python repo with a syntax error blocks via compile check', async () => {
+  const dir = tmp('gate-py-fail');
+  fs.writeFileSync(path.join(dir, 'requirements.txt'), 'flask\n');
+  fs.writeFileSync(path.join(dir, 'broken.py'), 'def nope(:\n');
+  const r = await sh(GATE, { cwd: dir, input: '{}' });
+  assert.equal(r.code, 2, 'python syntax error must block');
+  assert.match(r.err, /compile check|pytest/);
+});
+
+test('task-gate: healthy Python repo is allowed', async () => {
+  const dir = tmp('gate-py-ok');
+  fs.writeFileSync(path.join(dir, 'requirements.txt'), 'flask\n');
+  fs.writeFileSync(path.join(dir, 'fine.py'), 'VALUE = 1\n');
+  const r = await sh(GATE, { cwd: dir, input: '{}' });
+  assert.equal(r.code, 0, r.err);
+});
