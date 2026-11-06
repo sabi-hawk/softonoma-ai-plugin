@@ -5,6 +5,7 @@ description: Scan agent skills for security issues. Use when asked to "scan a sk
   or assess whether an agent skill is safe to install. Checks for prompt injection,
   malicious scripts, excessive permissions, secret exposure, and supply chain risks.
 allowed-tools: Read, Grep, Glob, Bash
+license: Apache-2.0
 ---
 <!-- Vendored from getsentry/skills (Apache-2.0) — skills/skill-scanner — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

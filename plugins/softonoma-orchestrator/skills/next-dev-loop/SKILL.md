@@ -6,6 +6,7 @@ description: >
   just that it compiles or type-checks. Combines /_next/mcp
   (Next.js's view) with agent-browser (the browser's view).
   Requires a running `next dev`.
+license: MIT
 ---
 <!-- Vendored from skills.sh: vercel/next.js — skills/next-dev-loop/SKILL.md — synced 2026-07-17. Re-sync: npx skills add vercel/next.js --skill next-dev-loop -->
 

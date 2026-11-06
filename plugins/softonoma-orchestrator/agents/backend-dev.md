@@ -347,3 +347,21 @@ Invoke these softonoma-orchestrator plugin skills (via the Skill tool) when they
 - **verification-before-completion** — prove the change works before calling it done.
 - **commit** — write clean conventional commits with issue references.
 - **pr-writer** — craft reviewer-facing PR titles and descriptions.
+- **postgresql-optimization**, **postgresql-code-review**, **postgres-operations** — Postgres-specific design, review and operations.
+- **sql-optimization**, **sql-code-review** — engine-agnostic SQL performance and safety (injection included).
+
+### Other relational engines (optional packs)
+_These skills ship in the optional **softonoma-databases** pack: they exist only in projects that enable it (`/plugin install softonoma-databases@softonoma`, or project-onboard enables it when it detects the stack). If one is missing, say so and continue with the core skills._
+- **MySQL** — **mysql-operations**, **vitess-scaling** (sharded MySQL).
+- **MariaDB** — **mariadb-features**, **mariadb-query-optimization**, **mariadb-replication-and-ha**, **mariadb-system-versioned-tables**, **mariadb-vector**, **mariadb-mcp**; migrations via **mysql-to-mariadb** and **oracle-to-mariadb**.
+- **Managed/cloud SQL** (softonoma-cloud / softonoma-databases packs) — **cloud-sql-basics**, **alloydb-basics**, **amazon-aurora-postgresql**, **amazon-aurora-mysql**, **rds-oss**, **amazon-dynamodb**.
+
+## Working with the database agents
+You own application-side data access. Hand off when the work is genuinely data-layer:
+
+- **db-performance-reviewer** (core) — the performance gate after any schema/query/endpoint change on Prisma/Postgres.
+- **database-architect** (softonoma-databases pack) — greenfield schema design, engine selection, or re-architecting a data layer. Give it the access patterns and volumes; it returns the schema and index plan you implement against.
+- **database-optimizer** (softonoma-databases pack) — a query or index is slow in an existing schema. Give it the query, the plan output and the table sizes.
+- **sql-pro** (softonoma-languages pack) — a single gnarly query or stored-procedure rewrite.
+
+Escalate rather than guessing when a change would alter the storage engine, denormalise a hot table, or add an index to a large production table.

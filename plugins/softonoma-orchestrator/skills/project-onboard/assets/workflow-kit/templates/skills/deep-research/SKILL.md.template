@@ -1,0 +1,26 @@
+---
+name: deep-research
+description: Exhaustive, multi-angle research on a module or feature for {{PROJECT_NAME}} BEFORE any implementation, stored as a durable dossier in .claude/knowledgebase/research/<module>/research.md. Use at the start of every new module or any non-trivial or unclear feature.
+---
+
+# Deep Research — {{PROJECT_NAME}}
+
+Research first, code second. The dossier is what lets the next session (or developer) start grounded.
+
+## 1. Check what exists
+Read `.claude/knowledgebase/research/<module>/` (update it rather than starting over), the module doc in
+`knowledgebase/modules/`, `database.md`, and the newest entries of `07-change-log.md`.
+
+## 2. Research from every angle (in parallel where independent)
+- **The requirement**: the owner's words, the ticket, any client document; quote them.
+- **The codebase**: how similar things are already done (files and lines); what to reuse.
+- **The domain**: regulatory or industry norms that constrain the answer (cite sources).
+- **The data**: entities, fields, relations, migrations, access rules.
+- **Edge cases and failure modes**: what the user sees when each goes wrong.
+- **Open questions**: each with the assumption you will build on, or marked "awaiting the owner".
+Use the **context-gatherer** agent for the code map and web search for domain norms; never invent a fact.
+
+## 3. Write the dossier
+`.claude/knowledgebase/research/<module>/research.md`: summary, sources, findings by angle, the case table
+draft for any rule change, risks, open questions, and the recommended approach. Link it from the ticket's
+plan file. Log it in `07-change-log.md`.

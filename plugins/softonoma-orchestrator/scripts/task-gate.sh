@@ -41,16 +41,25 @@ fi
 
 # ---------------------------------------------------------------- Python
 if [ -f pyproject.toml ] || [ -f requirements.txt ] || [ -f setup.cfg ]; then
-  PY=python3
-  [ -x .venv/bin/python ] && PY=.venv/bin/python
-  command -v "$PY" >/dev/null 2>&1 || exit 0
+  # Pick the first interpreter that actually RUNS: the project venv (POSIX or
+  # Windows layout), then python3/python/py. On Windows `python3` is often the
+  # Microsoft Store placeholder, which exists on PATH but fails to start; trusting
+  # `command -v` alone blocked every healthy Python repo there (0.24.0 fix).
+  PY=""
+  for c in .venv/bin/python .venv/Scripts/python.exe python3 python py; do
+    if [ "$c" = py ]; then set -- -3; else set --; fi
+    if "$c" "$@" -c "import sys" >/dev/null 2>&1; then PY="$c"; PYARGS="$*"; break; fi
+  done
+  [ -n "$PY" ] || exit 0   # no working Python: an environment gap, not a failure
+  # shellcheck disable=SC2086
+  run_py() { command "$PY" $PYARGS "$@"; }
 
-  if "$PY" -c "import pytest" >/dev/null 2>&1 && [ -d tests ]; then
+  if run_py -c "import pytest" >/dev/null 2>&1 && [ -d tests ]; then
     # -x: stop at first failure (fast feedback, bounded runtime)
-    "$PY" -m pytest -x -q >"$LOG" 2>&1 || { env_gap || block "pytest failed"; }
+    run_py -m pytest -x -q >"$LOG" 2>&1 || { env_gap || block "pytest failed"; }
   else
     # No test runner available: cheap syntax gate over the project's own code.
-    "$PY" -m compileall -q -x '(\.venv|venv|node_modules|\.git|build|dist)' . \
+    run_py -m compileall -q -x '(\.venv|venv|node_modules|\.git|build|dist)' . \
       >"$LOG" 2>&1 || { env_gap || block "python compile check failed"; }
   fi
   exit 0

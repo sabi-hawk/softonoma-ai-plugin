@@ -1,19 +1,23 @@
 # Git & Delivery — {{PROJECT_NAME}}
 
-Match the owner's reality; don't impose ceremony they didn't ask for.
+The stories behind each rule: `.claude/knowledgebase/lessons/git.md` (add one when a rule is born).
 
-## Identity
-{{GIT_IDENTITY}} (set locally to this repo if it differs from global). Remote: {{REMOTE}}.
+## Identity & remotes
+- Commit as {{GIT_IDENTITY}} (set per repo when it differs from global); remote {{REMOTE}}. Branch, commit, push and PR inside the repo you changed.
 
 ## Flow
-- Default branch: {{DEFAULT_BRANCH}}. {{Direct commits, or feature branches + PRs — pick what the owner wants.}}
-- Commit per logical slice with a clear message{{; trailer: }} `{{COAUTHOR_TRAILER}}`.
-- **Push policy**: {{push only when asked / on every slice / …}}.
-- {{PR policy: never auto-create/merge unless asked; hand the owner a compare URL if they self-merge.}}
-- Never commit secrets / credentials (git-ignored + hook-blocked).
+- Sync before you start, before you believe a gate, and before you push: `git fetch origin`, read `git log --oneline HEAD..origin/{{BASE_BRANCH}}`, merge it in. Gate the MERGED tree.
+- Branch from `{{BASE_BRANCH}}` (`feat/<short-name>`, `fix/<short>`); never commit to `{{DEFAULT_BRANCH}}` directly; continue a matching remote branch if one exists.
+- Commit per logical slice with a clear message, ending `Co-Authored-By: <the model that made the commit> <noreply@anthropic.com>`.
+- **Push ONCE, when the feature is ready and its gate green** (every push runs the pre-push hooks and usually a preview deploy). The one extra push is a backup when a session ends with commits only local.
+- Open the PR into `{{BASE_BRANCH}}`, run the AI review cycle (`pr-review-cycle`, at most 3 rounds), hand the URL to the developer. **The developer tests and merges; an agent never merges.**
+- Never force-push a shared branch; never `--no-verify`; never commit secrets (git-ignored and hook-blocked).
 
-## Before committing
-Run the gate ({{GATE}}); type-check + build clean; verify the change for real; update the KB in the same change.
+## One worktree per agent
+- Parallel agents each get their own git worktree (the plugin's `worktree.sh new <feature>`), removed when done. A read-only agent (reviewer, researcher, QA) never runs `git stash`, `reset`, `checkout`, `switch`, `restore`, `clean` or a commit.
 
-## Optional rigor (not default)
-{{Feature branches / git worktrees for parallel work / compare URLs — available when the owner wants more process.}}
+## The index
+- Commit with a pathspec (`git commit -m "…" -- <paths>`), never `git add -A` blind; read `git diff --cached --name-only` first; check `git show --stat HEAD` after; never rewrite a pushed commit.
+
+## Before committing / pushing
+- Run the gate ({{GATE}}), a clean build, a real check of the change, and the KB update in the same change.

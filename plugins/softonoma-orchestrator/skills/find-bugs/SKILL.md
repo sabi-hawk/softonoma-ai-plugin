@@ -1,6 +1,7 @@
 ---
 name: find-bugs
 description: Find bugs, security vulnerabilities, and code quality issues in local branch changes. Use when asked to review changes, find bugs, security review, or audit code on the current branch.
+license: Apache-2.0
 ---
 <!-- Vendored from getsentry/skills (Apache-2.0) — skills/find-bugs — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

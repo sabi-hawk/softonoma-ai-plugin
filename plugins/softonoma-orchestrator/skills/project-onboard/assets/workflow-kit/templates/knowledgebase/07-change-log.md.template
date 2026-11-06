@@ -1,0 +1,16 @@
+### {{ONBOARD_DATE_TIME}} ({{TZ_OFFSET}}) — Project onboarded to the Softonoma AI workflow
+**What**
+- Created `CLAUDE.md`, `.claude/` (rules, skills, agents, hooks, settings, knowledge base, plans, team) and `docs/SETUP.md` with `softonoma-orchestrator` project-onboard. Packs enabled: {{PACKS}}.
+- **Not done:** {{anything deliberately left for later}}.
+
+**Where**
+- {{REPO}}: the files above.
+
+**Why**
+- Put the project on one repeatable workflow that lives in the repo, not in a chat.
+
+**Verified**
+- {{The gate command run and its result; the hook path resolved; the team file saved.}}
+
+<!-- New entries go at the TOP of this file. When a new month starts, move the previous month's entries
+VERBATIM into 07-change-log-archive/<YYYY-MM>.md (.claude/rules/change-log.md). -->

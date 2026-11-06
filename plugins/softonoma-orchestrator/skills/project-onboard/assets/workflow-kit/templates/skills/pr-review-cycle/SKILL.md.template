@@ -1,0 +1,40 @@
+---
+name: pr-review-cycle
+description: Open the PR into {{BASE_BRANCH}}, run the pr-reviewer agent, POST its findings as inline comments on the PR, fix them, push the fixes once per round, and MARK each thread resolved; at most 3 rounds, then hand the PR to the developer to test and merge. Use after implementation is done and green. Requires the GitHub CLI (gh) authenticated once.
+---
+
+# PR Review Cycle — {{PROJECT_NAME}}
+
+## 1. Push once and open the PR
+The branch is pushed **once**, when the feature is ready and green. Then:
+```
+gh pr create --base {{BASE_BRANCH}} --head <branch> --title "<type>: <short>" \
+  --body "<what & why; the plan file; slices; how it was verified>"
+PR=$(gh pr view --json number -q .number)
+```
+
+## 2. Review
+1. `gh pr diff $PR` (and `gh pr diff $PR --name-only` for the scope list).
+2. Spawn the **pr-reviewer** agent (and **security-reviewer** for auth, payments, user data or new endpoints) on the diff. Optional `skip-<agent>` flags skip a reviewer; name every skipped one in the summary.
+3. Post the findings as ONE review with inline comments:
+   ```
+   gh api repos/{owner}/{repo}/pulls/$PR/reviews -X POST -f event=COMMENT \
+     -f body="Automated review (pr-reviewer). N findings — see inline comments." \
+     -F 'comments[][path]=<file>' -F 'comments[][line]=<line>' -F 'comments[][side]=RIGHT' \
+     -F 'comments[][body]=**[blocker] <title>** — <fix>'
+   ```
+
+## 3. Fix (scope and rounds)
+- A fix touches only files already in the PR (`gh pr diff $PR --name-only`); a finding that needs another file is fixed only if it is in the ticket's scope, and its reply says so.
+- Re-run the gate until green; verify for real; update the KB if behaviour changed.
+- Commit the round's fixes, then push **once** for the round, never once per finding.
+- **At most 3 rounds.** If round 3 still has blockers, stop and hand the PR to the developer with the open findings listed.
+
+## 4. Reply and resolve
+Reply on each fixed thread (`Fixed in <sha>: <what changed>`), then resolve it with the GraphQL
+`resolveReviewThread` mutation. A false positive gets a reply explaining why, then is resolved. Re-read every
+thread from the previous round before claiming "all addressed": silence about a finding is not a fix.
+
+## 5. Hand off
+Post a final summary comment (findings, what was fixed, what is left). Give the developer the PR URL: **they
+test and merge**; there is no separate approval step and the agent never merges.

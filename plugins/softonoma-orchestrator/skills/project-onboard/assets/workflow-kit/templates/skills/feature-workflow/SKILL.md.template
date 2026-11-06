@@ -1,55 +1,67 @@
 ---
 name: feature-workflow
-description: The end-to-end loop for any feature/bug/change on {{PROJECT_NAME}} — capture the requirement, ground in the knowledge base, decide, implement, self-test, validate with review subagents, verify for real, sync the knowledge base, and commit. Use whenever starting non-trivial work.
+description: The end-to-end loop for any feature/bug/change on {{PROJECT_NAME}} — sync, research first, write the ticket's plan file, branch, implement small slices, test first, self-test, review with subagents, verify for real, sync the knowledge base, push once, open the PR, run the AI review cycle, hand over for test and merge. Use whenever starting non-trivial work.
 ---
 
-# Feature Workflow (lightweight, owner-driven)
+# Feature Workflow — {{PROJECT_NAME}}
 
-How we build here. Requirements come from the **owner in chat** ({{adjust if tickets/FRDs are used}}).
-Be pragmatic; don't add ceremony. Run the phases in order; don't skip verify + KB-sync.
+Run the steps in order; never skip the real check, the KB sync or the change-log entry.
 
-> Golden rules: ground in the KB before coding · keep the app shippable after each slice · the gate is
-> {{GATE}} + a real check · update the KB in the same change · {{push policy}} · never touch secrets.
+> Golden rules: research before coding · ground in the KB · tests ship with the change · nothing is done
+> until it has been run for real · the KB and the change log ship with the change · push once ·
+> the developer merges · never touch secrets.
 
-## 1. Capture
-Log the requirement (dated) in the knowledge base before implementing, so intent is never lost.
+## 0. Sync with the remote
+`git fetch origin`, read `git log --oneline HEAD..origin/{{BASE_BRANCH}}`, merge it in. Repeat before you
+believe a gate and before you push (`.claude/rules/git.md`).
 
-**Large/multi-module initiatives:** after logging to the changelog, also consolidate the requirement
-into its **FRD** under `knowledgebase/frds/` (create one from the template if the module has none).
-Mature the FRD with the owner (Draft → In Review → Approved); only an **Approved** FRD is promoted to a
-plan and built. See `frds/README.md`. (Small Tier-1 changes skip FRDs — changelog + build.)
+## 1. Research (first)
+For a new module or anything unclear, run the **`deep-research`** skill before any code; it writes a dossier
+to `.claude/knowledgebase/research/<module>/research.md`. For a small change, the **context-gatherer** agent
+is enough. Read the relevant KB docs, `.claude/database/database.md` and the code you'll touch; reuse what exists.
 
-## 2. Ground
-Read the relevant KB docs + the code you'll touch. **Reuse** existing helpers/services. For a large
-or uncertain change, spawn the **context-gatherer** agent first.
+## 2. Capture and decide
+Write the ticket's plan file `.claude/plans/inprogress/<TICKET>.md` from `.claude/plans/TEMPLATE.md`: problem,
+scope, decisions, and for any change to a RULE (who/when/money/dates/permissions/notifications) **the case
+table first** (situation → expected result → the test that pins it). Resolve ambiguities yourself and record
+the assumption; ask the owner only for a genuine business decision.
 
-## 3. Decide
-Resolve ambiguities yourself; record notable choices. **Ask the owner only** when a choice is
-irreversible/costly, expands scope, conflicts with a prior requirement, or needs a secret.
+## 3. Branch
+From `{{BASE_BRANCH}}`: `feat/<short-name>` or `fix/<short>`.
+
+## Briefing a subagent (every spawn)
+A brief stands on its own: the task, the worktree path, the plan file, and **the list of files the agent may
+edit** ("edit only these; if another file needs changing, stop and report it"). A read-only agent is told it
+changes no files and runs no state-changing git (`stash`, `reset`, `checkout`, `switch`, `restore`, `clean`,
+`commit`). Name the plan file instead of pasting history.
 
 ## 4. Implement (small slices)
 {{Project structure rule — thin routes/UI, logic in the right layer. New data → migration with
-access-control in the same change.}}
+access control in the same change.}} The smallest correct change; match existing patterns.
 
-## 5. Self-test
-Type-check → build → {{GATE}}. Add/adjust tests for new behaviour. Loop until green.
+## 5. Test first, then the gate
+Write or update the test for the changed behaviour BEFORE finishing the slice, see it fail once (break the
+code a moment), then the gate: {{GATE}} (type-check → lint → tests → build). Loop until green.
 
-## 6. Validate with subagents (non-trivial changes)
-Spawn in parallel: **security-reviewer**, **quality-reviewer**, and for milestones **professional-qa**.
-Also run any built-in code/security review. Fix clear gaps; ask the owner about scope expansions.
+## 6. Review with subagents
+Tier by risk: a change to a RULE gets the case table and an independent reviewer; UI/copy changes get a
+design pass plus the lead's diff read. For non-trivial changes spawn **security-reviewer** and
+**quality-reviewer** in parallel; milestones add **professional-qa** (the `qa-review` skill). Fix blockers first.
 
 ## 7. Verify for real
-{{How to actually exercise the change (drive the UI / hit the API / inspect output) and read the result.}}
+{{How to actually exercise the change: drive the UI in a real browser and read the screenshot / hit the API and
+read the response.}} Until then the report is "implemented and green", never "done".
 
-## 8. Sync the knowledge base
-Update the database index (on schema change) + the relevant **`knowledgebase/modules/<module>`** doc
-(fold in the durable "how it works now") + the requirements log — in the **same** change as the code.
-If the change came from an FRD, leave the FRD as the requirements-of-record and move its knowledge into
-the module doc.
+## 8. Sync the knowledge base and log it
+Update the module doc under `.claude/knowledgebase/`, `.claude/database/database.md` on a schema change,
+`docs/SETUP.md` for anything a new machine needs, `CARRY-OVER.md` for follow-ups, and write the
+`07-change-log.md` entry (`.claude/rules/change-log.md`) — in the SAME change as the code.
 
-## 9. Commit (+ push when asked)
-Commit per slice with a clear message. {{Push/PR policy.}}
+## 9. Push once and open the PR
+Commit per slice (`Co-Authored-By:` trailer). Push **once**, when the feature is ready and green. Open the PR
+into `{{BASE_BRANCH}}` with what changed, why, and how it was verified.
 
-## Optional: bigger initiatives
-For a multi-step initiative worth tracking, drop a short note folder under `.claude/plans/` (see its
-README). Optional and lightweight — most chat-sized requests don't need it.
+## 10. PR review cycle — `pr-review-cycle` skill
+The **pr-reviewer** agent's findings are posted on the PR, fixed, pushed once per round and resolved; at
+most 3 rounds. Hand the developer the PR URL: **they test and merge** (agents never merge). On merge the plan
+file moves to `.claude/plans/done/` with an Outcome.

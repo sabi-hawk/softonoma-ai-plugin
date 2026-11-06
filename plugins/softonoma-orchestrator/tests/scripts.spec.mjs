@@ -168,7 +168,8 @@ test('hooks.json + plugin manifests: valid JSON, referenced scripts exist and ar
   for (const cmd of commands) {
     // Commands must be interpreter-prefixed ("node <path>" / "bash <path>") so they
     // survive plugin installers that strip Unix exec bits from the cache copy.
-    const m = cmd.match(/^(node|bash) (\S+)$/);
+    // The path is quoted ("${CLAUDE_PLUGIN_ROOT}/…") so a plugin root with a space survives (0.24.0).
+    const m = cmd.match(/^(node|bash) "(\$\{CLAUDE_PLUGIN_ROOT\}\/[^"\s]+)"$/);
     assert.ok(m, `hook command must be "node|bash \${CLAUDE_PLUGIN_ROOT}/<script>": ${cmd}`);
     const [, interpreter, scriptPath] = m;
     const rel = scriptPath.replace('${CLAUDE_PLUGIN_ROOT}', '').replace(/^[/\\]/, '');
@@ -230,4 +231,63 @@ test('task-gate: healthy Python repo is allowed', async () => {
   fs.writeFileSync(path.join(dir, 'fine.py'), 'VALUE = 1\n');
   const r = await sh(GATE, { cwd: dir, input: '{}' });
   assert.equal(r.code, 0, r.err);
+});
+
+// ------------------------------------------- worktree-guard.sh: Windows paths (0.24.0)
+// On Git Bash the payload carries D:\repo\file or D:/repo/file. The guard must treat
+// a drive-letter path as absolute and judge the file's OWN repo: the 0.23 guard did
+// not, and on Windows it compared an MSYS path with git's C:/ path, so it never blocked.
+const winPath = (p) => (process.platform === 'win32' ? p.replace(/\//g, '\\') : p);
+const guardRun = (file, projectDir) => sh(path.join(SCRIPTS, 'worktree-guard.sh'), {
+  input: JSON.stringify({ tool_input: { file_path: file } }),
+  env: { CLAUDE_PROJECT_DIR: projectDir },
+});
+
+test('worktree-guard.sh: a backslash/drive path to code on main is blocked even when the session is elsewhere', async () => {
+  const repo = initRepo(path.join(tmp('wgw'), 'repo'));
+  const elsewhere = tmp('wgw-other');
+  const r1 = await guardRun(winPath(path.join(repo, 'src', 'x.ts')), elsewhere);
+  assert.equal(r1.code, 2, 'native path to code on main must block:\n' + r1.err);
+  const r2 = await guardRun(path.join(repo, 'a.ts').replace(/\\/g, '/'), elsewhere);
+  assert.equal(r2.code, 2, 'forward-slash path to code on main must block:\n' + r2.err);
+});
+
+test('worktree-guard.sh: backslash paths to *.md, docs/ and .claude/ on main are allowed; the opt-out allows code', async () => {
+  const repo = initRepo(path.join(tmp('wgw2'), 'repo'));
+  const elsewhere = tmp('wgw2-other');
+  for (const rel of ['notes.md', 'docs/x.ts', '.claude/rules/x.ts']) {
+    const r = await guardRun(winPath(path.join(repo, ...rel.split('/'))), elsewhere);
+    assert.equal(r.code, 0, `${rel} on main must be allowed:\n` + r.err);
+  }
+  git(repo, 'config', 'softonoma.worktreeGuard', 'off');
+  const r = await guardRun(winPath(path.join(repo, 'a.ts')), elsewhere);
+  assert.equal(r.code, 0, 'opted-out repo must allow code:\n' + r.err);
+});
+
+// ------------------------------------------------------- onboard-check.sh (0.24.0)
+const onboard = (dir) => sh(path.join(SCRIPTS, 'onboard-check.sh'), { input: '{}', env: { CLAUDE_PROJECT_DIR: dir } });
+
+test('onboard-check.sh: speaks for an empty folder or a repo with no setup, exit 0', async () => {
+  const empty = tmp('ob-empty');
+  const r1 = await onboard(empty);
+  assert.equal(r1.code, 0);
+  assert.match(r1.out, /new-project/, 'empty folder: expected the new-project hint');
+  const repo = initRepo(path.join(tmp('ob-repo'), 'repo'));
+  const r2 = await onboard(repo);
+  assert.match(r2.out, /new-project/, 'repo without CLAUDE.md/.claude: expected the hint');
+});
+
+test('onboard-check.sh: silent when the project or a parent is set up, and for a non-project folder', async () => {
+  const ws = tmp('ob-ws');
+  fs.writeFileSync(path.join(ws, 'CLAUDE.md'), '# ws\n');
+  const child = initRepo(path.join(ws, 'product-repo'));
+  const r1 = await onboard(child);
+  assert.equal(r1.code, 0);
+  assert.equal(r1.out.trim(), '', 'a repo inside a set-up workspace must stay silent');
+  const withClaude = initRepo(path.join(tmp('ob-dot'), 'repo'));
+  fs.mkdirSync(path.join(withClaude, '.claude'));
+  assert.equal((await onboard(withClaude)).out.trim(), '', '.claude/ present: silent');
+  const random = tmp('ob-random');
+  fs.writeFileSync(path.join(random, 'notes.txt'), 'x');
+  assert.equal((await onboard(random)).out.trim(), '', 'a non-project folder: silent');
 });

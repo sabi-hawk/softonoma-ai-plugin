@@ -1,6 +1,7 @@
 ---
 name: subagent-driven-development
 description: Use when executing implementation plans with independent tasks in the current session
+license: MIT
 ---
 <!-- Vendored from obra/superpowers (MIT) — skills/subagent-driven-development — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

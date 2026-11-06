@@ -7,7 +7,7 @@
     {
       "name": "softonoma-orchestrator",
       "source": "./",
-      "description": "Softonoma multi-agent feature pipeline (18 agents, team wizard, coverage gates).",
+      "description": "Softonoma multi-agent feature pipeline (30 agents, 102 skills, project onboarding, team wizard). The optional packs are listed in the repository-root marketplace.",
       "category": "development"
     }
   ]

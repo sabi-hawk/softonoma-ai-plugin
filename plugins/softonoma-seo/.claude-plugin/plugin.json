@@ -1,0 +1,13 @@
+{
+  "name": "softonoma-seo",
+  "version": "0.24.0",
+  "description": "SEO and content: six SEO/content agents and fourteen SEO skills (audits, technical SEO, schema markup, programmatic SEO). Enable on public marketing websites.",
+  "author": {
+    "name": "Softonoma"
+  },
+  "keywords": [
+    "softonoma",
+    "pack",
+    "seo"
+  ]
+}

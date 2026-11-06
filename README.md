@@ -1,96 +1,83 @@
 # softonoma-ai-plugin
 
-A home for all of Softonoma's Claude-related custom tooling — plugins, agents, skills, hooks, and workflows used across Softonoma engineering.
-
-Right now it contains a single Claude Code plugin, **`softonoma-orchestrator`**. More custom Claude assets will be added here over time.
+A home for all of Softonoma's Claude-related custom tooling: one marketplace (`softonoma`) holding the
+**`softonoma-orchestrator`** plugin (the core, enabled in every project) and nine optional **packs**
+enabled per project by stack.
 
 ## Contents
 
 | Path | What it is |
 |------|-----------|
-| [`plugins/softonoma-orchestrator/`](plugins/softonoma-orchestrator) | Multi-agent feature-delivery pipeline for Claude Code (14 agents, 85 skills, hooks, coverage/PR gates). |
+| [`plugins/softonoma-orchestrator/`](plugins/softonoma-orchestrator) | The core: multi-agent feature pipeline, project onboarding, team wizard, hooks and gates. **30 agents, 102 skills.** |
+| [`plugins/softonoma-languages/`](plugins/softonoma-languages) | Language specialists (Go, Rust, Java, C#, PHP, Python/Django, GraphQL, shell). 13 agents, 3 skills. |
+| [`plugins/softonoma-frontend-frameworks/`](plugins/softonoma-frontend-frameworks) | Angular, Vue/Nuxt, Svelte, Astro, Vite, pnpm/Turborepo. 36 skills. |
+| [`plugins/softonoma-mobile/`](plugins/softonoma-mobile) | React Native / Expo / EAS. 2 agents, 22 skills. |
+| [`plugins/softonoma-flutter/`](plugins/softonoma-flutter) | Flutter / Dart. 1 agent, 22 skills. |
+| [`plugins/softonoma-cloud/`](plugins/softonoma-cloud) | AWS, Azure, Google Cloud, Terraform, Docker, Kubernetes, GitHub Actions. 6 agents, 37 skills. |
+| [`plugins/softonoma-databases/`](plugins/softonoma-databases) | MariaDB, MySQL/Vitess, Oracle, Aurora, DynamoDB, schema architecture. 2 agents, 13 skills. |
+| [`plugins/softonoma-data-ai/`](plugins/softonoma-data-ai) | AI, ML and data agents. 4 agents. |
+| [`plugins/softonoma-seo/`](plugins/softonoma-seo) | SEO and content for marketing websites. 6 agents, 14 skills. |
+| [`plugins/softonoma-ops/`](plugins/softonoma-ops) | Axiom, the ClickUp CU lifecycle, the `/kb` viewer. 14 skills. |
 
-## `softonoma-orchestrator`
+**Total: 64 agents, 263 skills.** A project enables the core plus only the packs for its stack, because every
+enabled agent and skill adds its description to every session.
 
-A multi-agent feature pipeline for a modern web stack: **Next.js / Vercel / Tailwind**, **Supabase (Postgres / RLS / Auth)**, **Prisma**, **MongoDB / Redis** and **NestJS**, with optional Paymob, WebEngage and LiteAPI integrations, plus legacy **Laravel/Vue** support.
-
-It drives a feature end-to-end: BA & legacy analysis → prototyping → planning → parallel frontend / backend / integrations implementation → QA, security & performance review → PR gate.
-
-**Starting or adopting a project?** The `project-onboard` skill is the entry point. It covers three modes: **(A)** a brand-new project the AI scaffolds from scratch, **(B)** an existing repo that has no AI workflow yet (learn the codebase → generate a tailored `CLAUDE.md` + `.claude/` → seed the knowledge base from real code → wire the gates), and **(C)** a multi-repo product sharing one `.claude/` via a workspace repo. It vendors the Softonoma **AI Workflow Kit** templates (knowledge base, rules, review agents, feature-workflow loop, secret-blocking hook) so any project ends up on the same disciplined setup.
-
-### Agents (17)
-
-`ba-analyst`, `legacy-analyst`, `prototype-builder`, `planner`, `frontend-dev`, `backend-dev`, `python-backend-dev`, `integrations-dev`, `unit-test-engineer`, `e2e-playwright`, `qa-reviewer`, `security-reviewer`, `performance-reviewer`, `db-performance-reviewer`, `code-reviewer`, `browser-verifier`, `devops-vercel`.
-
-### Skills (85)
-
-Grouped roughly by area:
-
-- **Orchestration & workflow** — `project-onboard`, `agent-team-orc`, `orchestrate-feature`, `plan-lifecycle`, `writing-plans`, `executing-plans`, `subagent-driven-development`, `to-spec`, `to-tickets`, `frd-builder`, `status`, `help`.
-- **Frontend / Next.js / React** — `nextjs-app-router-patterns`, `nextjs-typescript`, `next-dev-loop`, `next-cache-components-optimizer`, `react-best-practices`, `react-state-management`, `frontend-design`, `responsive-design`, `design-system-patterns`, `tailwind-design-system`, `web-design-guidelines`.
-- **Backend / data** — `supabase-patterns`, `prisma-postgres`, `fastapi-python`, `laravel-best-practices`, `laravel-database-optimization`, `laravel-inertia-react`, `laravel-owasp-security`, `laravel-queues`, `nestjs-best-practices`, `php-best-practices`, `mongodb-connection`, `mongodb-query-optimizer`, `mongodb-schema-design`, `redis-core`, `redis-connections`, `redis-security`, `database-migration`.
-- **Integrations** — `xero-integration`, `paymob-integration`, `webengage-integration`, `liteapi-integration`, `better-auth-best-practices`, `better-auth-create-auth`, `better-auth-security`, `better-auth-two-factor`.
-- **Architecture & design** — `architecture-patterns`, `api-design-principles`, `codebase-design`, `codebase-research`, `domain-modeling`, `composition-patterns`, `improve-codebase-architecture`.
-- **Quality, testing & review** — `test-driven-development`, `webapp-testing`, `playwright-cli`, `find-bugs`, `diagnosing-bugs`, `systematic-debugging`, `requesting-code-review`, `receiving-code-review`, `review-pr`, `pr-writer`, `commit`, `verification-before-completion`, `setup-pre-commit`, `dependency-upgrade`.
-- **Security** — `production-launch`, `security-audit`, `sast-configuration`, `gha-security-review`, `sentry-security-review`, `pci-compliance`, `threat-mitigation-mapping`.
-- **Knowledge & tooling** — `brainstorming`, `kb-builder`, `product-kb`, `skill-writer`, `skill-scanner`, `clickup-workflows`, `git-worktree-discipline`, `prototype`, `vercel-optimize`.
-
-### Layout
-
-```
-plugins/softonoma-orchestrator/
-├── .claude-plugin/
-│   ├── plugin.json          # plugin manifest
-│   └── marketplace.json     # marketplace entry
-├── agents/                  # 17 subagent definitions
-├── skills/                  # 85 skills
-├── hooks/hooks.json         # lifecycle hooks
-├── scripts/                 # coverage/task gates, worktree helpers, team monitor
-├── tests/                   # plugin tests
-└── .mcp.json                # MCP servers (ClickUp)
-```
+**How every project works** (commands, the structure onboarding creates, the loop, models and tokens, safety
+rails): [`plugins/softonoma-orchestrator/WORKFLOW.md`](plugins/softonoma-orchestrator/WORKFLOW.md).
 
 ## Installation
 
-**Option 1 — straight from GitHub (recommended).** The repo root carries a marketplace manifest, so inside any Claude Code session:
-
+**From GitHub (recommended)**, inside any Claude Code session:
 ```
 /plugin marketplace add sabi-hawk/softonoma-ai-plugin
 /plugin install softonoma-orchestrator@softonoma
 /reload-plugins
 ```
-
-**Option 2 — from a local clone** (useful when developing the plugin itself):
-
-```bash
-# 1. clone (keep the clone — you'll git pull it for updates)
+**From a local clone** (when developing the plugin itself):
+```
 git clone https://github.com/sabi-hawk/softonoma-ai-plugin.git
-
-# 2. inside a Claude Code session (repo root or the plugin folder both work):
 /plugin marketplace add <path-to>/softonoma-ai-plugin
 /plugin install softonoma-orchestrator@softonoma
 /reload-plugins
 ```
+Packs: `/plugin install <pack>@softonoma`, then `/reload-plugins` (or let `new-project` enable them).
+
+## Starting a project
+
+Open Claude Code at the project's root and run:
+```
+/softonoma-orchestrator:new-project
+```
+It detects the stack, creates `CLAUDE.md` and the standard `.claude/` structure, enables the matching packs and
+saves the agent team, without overwriting anything. An older setup: `/softonoma-orchestrator:upgrade-project`.
+`/softonoma-orchestrator:orchestrate-feature` also runs onboarding by itself when a project has no setup.
 
 ## Updating (every developer machine)
 
-The plugin is installed per machine, so updates are pulled with two commands from any
-terminal (not a `git pull` of a project repo):
-
-```bash
-claude plugin marketplace update softonoma
-claude plugin update softonoma-orchestrator@softonoma
 ```
+/plugin marketplace update softonoma
+/reload-plugins
+```
+(or from a terminal: `claude plugin marketplace update softonoma` then `claude plugin update softonoma-orchestrator@softonoma`, and restart open sessions). Check what is installed with `claude plugin list`.
 
-Then restart any open Claude Code sessions to load the new version. Check what's installed
-anytime with `claude plugin list`.
+Full step-by-step instructions for Windows, macOS and Linux are in
+[`plugins/softonoma-orchestrator/README.md`](plugins/softonoma-orchestrator/README.md).
 
-Full step-by-step instructions for Windows, macOS and Linux — plus how to update and reload — are in [`plugins/softonoma-orchestrator/README.md`](plugins/softonoma-orchestrator/README.md).
+## Tests
+
+```
+cd plugins/softonoma-orchestrator && npm test
+```
+Covers the scripts and hooks (worktree guard incl. Windows paths, task gate, onboarding check, coverage gate),
+every agent and skill in the core and the packs (frontmatter, models, script paths, cross-plugin skill
+references), the marketplace (every plugin folder listed, names match) and the 64/263 totals.
 
 ## Contributing
 
-Add new Claude customizations (plugins, standalone skills, agents) under a clear top-level folder and update this README's contents table.
+Add a skill or agent to the core only when most projects need it; otherwise put it in the matching pack (or a
+new pack listed in `.claude-plugin/marketplace.json`). Keep descriptions short: they load into every session.
 
 ## Credits
 
-Adapted from the open-source `alfred-orchestrator` plugin by InsuranceMarket.ae / AlfredHoldings (MIT licensed) and rebranded for Softonoma. See [`LICENSE`](LICENSE).
+Adapted from the open-source `alfred-orchestrator` plugin by InsuranceMarket.ae / AlfredHoldings (MIT licensed)
+and extended for Softonoma. See [`LICENSE`](LICENSE) and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

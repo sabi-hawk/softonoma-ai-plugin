@@ -1,6 +1,7 @@
 ---
 name: pr-writer
 description: Create or refresh reviewer-facing PR titles and descriptions. Use when opening a PR, updating its title or body, or preparing branch changes for review.
+license: Apache-2.0
 ---
 <!-- Vendored from getsentry/skills (Apache-2.0) — skills/pr-writer — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

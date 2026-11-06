@@ -1,11 +1,77 @@
 {
   "name": "softonoma",
-  "owner": { "name": "Softonoma" },
+  "owner": {
+    "name": "Softonoma"
+  },
+  "description": "Softonoma's Claude Code plugins: the softonoma-orchestrator core (multi-agent pipeline, project onboarding, gates) plus nine optional stack packs.",
   "plugins": [
     {
       "name": "softonoma-orchestrator",
       "source": "./plugins/softonoma-orchestrator",
-      "description": "Softonoma multi-agent feature pipeline (13 agents, team wizard, project onboarding, coverage gates).",
+      "description": "Softonoma multi-agent feature pipeline: 30 agents, 102 skills, project onboarding (/new-project), team wizard, worktree guard, task gate. Enable in every project; add the packs below for other stacks.",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-languages",
+      "source": "./plugins/softonoma-languages",
+      "description": "Optional pack for softonoma-orchestrator. Language specialist agents (C#, Django, FastAPI, Go, Java, JavaScript, PHP, Python, Rust, shell, SQL, TypeScript, GraphQL) and shell-scripting skills. Enable in projects whose stack goes beyond the core Next.js/NestJS/FastAPI builders.",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-frontend-frameworks",
+      "source": "./plugins/softonoma-frontend-frameworks",
+      "description": "Optional pack for softonoma-orchestrator. Angular, Vue/Pinia/VueUse, Nuxt, Svelte, Astro, Vite/Vitest/VitePress and JS monorepo tooling (pnpm, Turborepo, tsdown, UnoCSS, Nitro) skills. Enable in projects built on those frameworks.",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-mobile",
+      "source": "./plugins/softonoma-mobile",
+      "description": "Optional pack for softonoma-orchestrator. Mobile specialists (iOS, React Native) and the full Expo/EAS/React Native skill set. Enable in React Native / Expo projects (the core mobile-dev agent and expo-react-native skill stay in the core).",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-flutter",
+      "source": "./plugins/softonoma-flutter",
+      "description": "Optional pack for softonoma-orchestrator. Flutter/Dart: the flutter-expert agent and the Flutter and Dart skills. Enable in Flutter projects.",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-cloud",
+      "source": "./plugins/softonoma-cloud",
+      "description": "Optional pack for softonoma-orchestrator. Cloud and infrastructure: AWS, Azure, Google Cloud, Terraform, Docker and GitHub Actions skills, plus cloud, Kubernetes, Terraform, deployment, observability and troubleshooting agents. Enable in projects hosted on those platforms.",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-databases",
+      "source": "./plugins/softonoma-databases",
+      "description": "Optional pack for softonoma-orchestrator. Database engines beyond the core Postgres/Prisma/MongoDB/Redis set: MariaDB, MySQL, Vitess, Oracle migrations, Aurora, DynamoDB, plus the database-architect and database-optimizer agents. Enable in projects on those engines or doing schema architecture.",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-data-ai",
+      "source": "./plugins/softonoma-data-ai",
+      "description": "Optional pack for softonoma-orchestrator. AI, ML and data agents (ai-engineer, ml-engineer, data-engineer, data-scientist). Enable in projects with LLM features, model serving, pipelines or analytics.",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-seo",
+      "source": "./plugins/softonoma-seo",
+      "description": "Optional pack for softonoma-orchestrator. SEO and content: six SEO/content agents and fourteen SEO skills (audits, technical SEO, schema markup, programmatic SEO). Enable on public marketing websites.",
+      "category": "development"
+    },
+    {
+      "name": "softonoma-ops",
+      "source": "./plugins/softonoma-ops",
+      "description": "Optional pack for softonoma-orchestrator. Operations add-ons: Axiom log/metrics skills (triage, alerting, dashboards), the ClickUp CU lifecycle skills (raise-cu, pickup-cu, signoff-cu, verify-cu) and the kb skill with its /kb viewer indexer. Enable in projects using Axiom, the ClickUp lifecycle, or an in-app /kb.",
+      "category": "development"
+    },
+    {
+      "name": "figma",
+      "source": {
+        "source": "github",
+        "repo": "figma/mcp-server-guide"
+      },
+      "description": "Figma's official plugin — Figma MCP server plus first-party skills (figma-use, figma-generate-design, figma-code-connect, …). Install alongside softonoma-orchestrator for design-to-code work; figma-to-ui defers to these skills when present.",
       "category": "development"
     }
   ]

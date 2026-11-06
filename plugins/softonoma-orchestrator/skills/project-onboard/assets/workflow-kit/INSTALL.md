@@ -30,19 +30,20 @@ Create the structure below, **filling placeholders** (`{{PROJECT_NAME}}`, `{{STA
 and **rewriting** the prose so it describes *this* project, not a generic one. Drop sections that
 don't apply (e.g. no DB → skip `database/` + `db-change`; no browser UI → skip `browser-verify`).
 
+The authoritative target structure is `WORKFLOW.md` §2 at the plugin root (it is also copied into the
+project as `.claude/WORKFLOW.md`). In short:
 ```
+CLAUDE.md  docs/SETUP.md
 .claude/
-├── settings.json          ← from settings.json.template (hooks + allow/deny for this stack)
-├── hooks/                 ← block-secret-writes.mjs (use as-is; add stack-specific guards if useful)
-├── rules/                 ← security · testing · conventions · git (rewrite to this project's truth)
-├── agents/                ← context-gatherer + the review agents (adapt tools/model + checklists)
-├── skills/                ← feature-workflow (your core loop) + db-change / browser-verify / find-skills as relevant
-├── knowledgebase/         ← README (3-part index) + the changelog (fill from the codebase, Step 4)
-│   ├── modules/           ← DURABLE per-module "how it works now" — the real KB (one doc/folder per module)
-│   ├── frds/              ← per-feature requirement specs for large initiatives (keep if multi-module work is expected; else drop)
-│   └── reference/         ← origin/provenance: initial overview, architecture, v1 rules, source (keep if such material exists)
-├── database/database.md   ← schema index (skip if no DB)
-└── plans/                 ← README + backlog/upcoming/inprogress/done (keep empty; optional)
+├── WORKFLOW.md  settings.json  DEVELOPER-GUIDE.md
+├── hooks/block-secret-writes.mjs
+├── rules/         ← security · testing · conventions · git · change-log (one line per rule, stories in lessons/)
+├── skills/        ← feature-workflow · deep-research · pr-review-cycle (+ db-change / browser-verify / qa-review / find-skills)
+├── agents/        ← context-gatherer · pr-reviewer · security-reviewer · quality-reviewer · professional-qa
+├── teams/<team>.json
+├── plans/         ← backlog/ upcoming/ inprogress/ done/ + README.md TEMPLATE.md CARRY-OVER.md
+├── database/database.md   ← only with a database
+└── knowledgebase/ ← README · 07-change-log.md + 07-change-log-archive/ · lessons/ · modules/ · research/ (+ frds/, reference/ for large initiatives)
 ```
 Also create/refresh the root **`CLAUDE.md`** (from `CLAUDE.md.template`) as the map that points into
 `.claude/`, and generate **`.claude/DEVELOPER-GUIDE.md`** (from `DEVELOPER-GUIDE.md.template`) — the

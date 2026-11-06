@@ -5,12 +5,18 @@ description: The plans/{upcoming,in-progress,done} workflow and plan file format
 
 # Plan Lifecycle
 
-Folders (repo root):
-- `plans/upcoming/` — approved-for-later plans
-- `plans/in-progress/` — exactly the plans currently being implemented
-- `plans/done/` — shipped plans (immutable)
+Folders. **Resolve the root first; both layouts are supported:**
+- **Onboarded layout (0.24.0+, what `project-onboard` creates):** `.claude/plans/{backlog,upcoming,inprogress,done}/` plus `README.md`, `TEMPLATE.md` (one file per ticket, `inprogress/<TICKET>.md`) and `CARRY-OVER.md` (follow-ups that outlive their ticket).
+- **Legacy layout:** `plans/{upcoming,in-progress,done}/` at the repo root.
+- Rule: use `.claude/plans/` when it exists, else `plans/`; the active folder is `inprogress/` when it exists there, else `in-progress/`. Never create the other layout beside an existing one. Below, `plans/in-progress/` means the resolved active folder.
 
-A plan moves upcoming → in-progress when implementation is approved, and in-progress → done only after the human developer approves the merged PR. Moves are `git mv` so history is kept.
+Stages:
+- `backlog/` — captured but parked (onboarded layout)
+- `upcoming/` — approved-for-later plans
+- `in-progress/` (or `inprogress/`) — exactly the plans currently being implemented
+- `done/` — shipped plans (immutable)
+
+A plan moves upcoming → in-progress when implementation is approved, and in-progress → done only after the PR is merged (the developer merges; agents never do). Moves are `git mv` so history is kept.
 
 ## Plan file format: `plans/<stage>/<module>.md`
 

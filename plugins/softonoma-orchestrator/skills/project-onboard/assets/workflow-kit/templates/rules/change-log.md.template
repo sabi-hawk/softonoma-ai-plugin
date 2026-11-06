@@ -1,0 +1,20 @@
+# Change Log — the standing rule
+
+The stories behind each rule: `.claude/knowledgebase/lessons/change-log.md`.
+
+## When and where
+- Every change is written into `.claude/knowledgebase/07-change-log.md`, dated and timed, AT THE MOMENT it is made, from the session that made it, never from memory later. New entries go at the TOP.
+- The file holds the current month. When a new month starts, the previous one moves VERBATIM into `07-change-log-archive/<YYYY-MM>.md` in one commit, nothing edited. Read the file's top only; grep the archive.
+
+## Times
+- Times are `{{TZ_OFFSET}}` (the owner's zone). Interpolate the clock inside the command that writes the heading (`$(date "+%Y-%m-%d %H:%M")`); never a remembered or estimated time.
+
+## The entry
+- `### YYYY-MM-DD HH:MM ({{TZ_OFFSET}}) — one-line title`, then **What**, **Where** (repo · files / branch / PR, or the environment), **Why**, and **Verified**: the command, response or screen actually observed ("it built" does not count).
+- Always include what was deliberately NOT done and why, the wrong turns when the diagnosis was hard, and who decided when it was not us.
+
+## What gets an entry
+- Code merged or released; anything done to a database (migration, seed, manual edit); env vars set (KEY and where, never the value); configuration changes; KB and doc changes; an investigation that concluded something.
+
+## Never in the log
+- No secrets, tokens, passwords or personal data: record the shape and location, never the value.

@@ -1,6 +1,7 @@
 ---
 name: test-driven-development
 description: Use when implementing any feature or bugfix, before writing implementation code
+license: MIT
 ---
 <!-- Vendored from skills.sh: obra/superpowers — skills/test-driven-development/SKILL.md — synced 2026-07-17. Re-sync: npx skills add obra/superpowers --skill test-driven-development -->
 

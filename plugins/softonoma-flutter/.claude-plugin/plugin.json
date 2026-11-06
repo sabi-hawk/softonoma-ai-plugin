@@ -1,0 +1,13 @@
+{
+  "name": "softonoma-flutter",
+  "version": "0.24.0",
+  "description": "Flutter/Dart: the flutter-expert agent and the Flutter and Dart skills. Enable in Flutter projects.",
+  "author": {
+    "name": "Softonoma"
+  },
+  "keywords": [
+    "softonoma",
+    "pack",
+    "flutter"
+  ]
+}
