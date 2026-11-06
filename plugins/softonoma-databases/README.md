@@ -1,6 +1,6 @@
 # softonoma-databases
 
-Optional pack for **softonoma-orchestrator** (version 0.25.0). Database engines beyond the core Postgres/Prisma/MongoDB/Redis set: MariaDB, MySQL, Vitess, Oracle migrations, Aurora, DynamoDB, plus the database-architect and database-optimizer agents. Enable in projects on those engines or doing schema architecture.
+Optional pack for **softonoma-orchestrator** (version 0.25.1). Database engines beyond the core Postgres/Prisma/MongoDB/Redis set: MariaDB, MySQL, Vitess, Oracle migrations, Aurora, DynamoDB, plus the database-architect and database-optimizer agents. Enable in projects on those engines or doing schema architecture.
 
 ## Enable it
 ```

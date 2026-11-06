@@ -1,6 +1,6 @@
 # softonoma-seo
 
-Optional pack for **softonoma-orchestrator** (version 0.25.0). SEO and content: six SEO/content agents and fourteen SEO skills (audits, technical SEO, schema markup, programmatic SEO). Enable on public marketing websites.
+Optional pack for **softonoma-orchestrator** (version 0.25.1). SEO and content: six SEO/content agents and fourteen SEO skills (audits, technical SEO, schema markup, programmatic SEO). Enable on public marketing websites.
 
 ## Enable it
 ```

@@ -1,6 +1,6 @@
 {
   "name": "softonoma-orchestrator",
-  "version": "0.25.0",
+  "version": "0.25.1",
   "description": "Softonoma multi-agent feature pipeline: BA/legacy analysis, prototyping, planning, parallel FE/BE/mobile/integrations implementation, QA/security/performance review, PR gate. Stack: Next.js/Vercel/Tailwind, Supabase (Postgres/RLS/Auth), Prisma, Drizzle, MongoDB/Redis, BullMQ, NestJS, FastAPI/Python, React Native/Expo; plus project onboarding (/new-project, /upgrade-project) that creates the standard .claude/ structure and enables the matching optional packs (languages, frontend frameworks, mobile, Flutter, cloud, databases, data/AI, SEO, ops). Legacy Laravel/Vue support.",
   "author": {
     "name": "Softonoma"

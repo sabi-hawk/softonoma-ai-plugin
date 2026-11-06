@@ -22,8 +22,12 @@ INPUT=$(cat)
 
 # --- extract the target path from the payload -------------------------------
 # Write/Edit/MultiEdit use file_path; NotebookEdit uses notebook_path.
-raw=$(printf '%s' "$INPUT" | sed -n \
-  's/.*"\(file_path\|notebook_path\)"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\2/p' | head -n1)
+# ERE (`sed -E`), never BRE `\|`: BSD sed on macOS has no BRE alternation, so the
+# old pattern matched nothing there, every path came out empty, and every code
+# edit was judged against the session's checkout, blocked even inside a linked
+# worktree (0.25.1).
+raw=$(printf '%s' "$INPUT" | sed -n -E \
+  's/.*"(file_path|notebook_path)"[[:space:]]*:[[:space:]]*"([^"]*)".*/\2/p' | head -n1)
 
 # Unescape the JSON string, then normalise Windows separators.
 path=$(printf '%s' "$raw" | sed -e 's/\\\\/\\/g' -e 's/\\"/"/g' -e 's/\\\//\//g' -e 's/\\/\//g')
