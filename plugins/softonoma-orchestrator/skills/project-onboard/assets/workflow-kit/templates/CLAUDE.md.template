@@ -43,8 +43,9 @@ model, data-integrity rules, and any framework pitfall the team keeps hitting. A
 ## 3. How we work — the feature workflow
 Every change follows `.claude/skills/feature-workflow/SKILL.md`:
 **sync with the remote → research (first) → write the ticket's plan file → branch → implement small
-slices → write/update the test → self-test (the gate) → review with subagents → verify for real → sync the
-KB → push ONCE → open the PR → AI review cycle (at most 3 rounds) → the developer tests and merges.**
+slices → write/update the test → self-test (the gate) → verify for real → sync the
+KB → push ONCE → open the PR → merge into {{BASE_BRANCH}} → deploy the non-production environments.**
+Reviews (reviewer agents, the PR-review cycle, a manual review) are OFF by default; run one only when asked.
 Larger multi-repo work can use the plugin pipeline: `/softonoma-orchestrator:orchestrate-feature`.
 
 ## 4. Commands
@@ -64,8 +65,9 @@ Larger multi-repo work can use the plugin pipeline: `/softonoma-orchestrator:orc
 
 ## 6. Git & docs
 - Identity {{GIT_IDENTITY}}; remote {{REMOTE}}; default branch {{DEFAULT_BRANCH}}.
-- Feature branches from {{BASE_BRANCH}}; push once when the feature is ready; the agent opens the PR and runs
-  the AI review; **the developer tests and merges** (agents never merge).
+- Feature branches from {{BASE_BRANCH}}; push once when the feature is ready; the agent opens the PR and merges it
+  into {{BASE_BRANCH}} once the gate is green on the merged head (no review step); a production merge or
+  release waits for the developer's go.
 - Keep the KB current in the **same change** as the code.
 
 ## 7. For the owner

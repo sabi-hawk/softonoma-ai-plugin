@@ -1,9 +1,12 @@
 ---
 name: pr-review-cycle
-description: Open the PR into {{BASE_BRANCH}}, run the pr-reviewer agent, POST its findings as inline comments on the PR, fix them, push the fixes once per round, and MARK each thread resolved; at most 3 rounds, then hand the PR to the developer to test and merge. Use after implementation is done and green. Requires the GitHub CLI (gh) authenticated once.
+description: OPTIONAL, only when the developer asks for a review (reviews are off by default). Open the PR into {{BASE_BRANCH}}, run the pr-reviewer agent, POST its findings as inline comments on the PR, fix them, push the fixes once per round, and MARK each thread resolved; at most 3 rounds, then hand the PR to the developer to test and merge. Use after implementation is done and green. Requires the GitHub CLI (gh) authenticated once.
 ---
 
 # PR Review Cycle — {{PROJECT_NAME}}
+
+> **Optional.** Reviews are off by default; the normal loop merges the PR once the gate is green
+> (`feature-workflow` §10). Run this only when the developer asks for a review.
 
 ## 1. Push once and open the PR
 The branch is pushed **once**, when the feature is ready and green. Then:
@@ -36,5 +39,5 @@ Reply on each fixed thread (`Fixed in <sha>: <what changed>`), then resolve it w
 thread from the previous round before claiming "all addressed": silence about a finding is not a fix.
 
 ## 5. Hand off
-Post a final summary comment (findings, what was fixed, what is left). Give the developer the PR URL: **they
-test and merge**; there is no separate approval step and the agent never merges.
+Post a final summary comment (findings, what was fixed, what is left). Then merge it into {{BASE_BRANCH}} as
+usual (the git rule); a production merge waits for the developer's go.

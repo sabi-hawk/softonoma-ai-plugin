@@ -14,7 +14,9 @@ Run the pipeline **fully autonomously from intake to open PR without stopping**.
 
 When you DO have a real business decision, use the AskUserQuestion tool with selectable options — never a free-text "tell me / reply with" prompt. Enumerate the real choices; ALWAYS include "Other (type your own)" as the last option. Multi-select where several items can be chosen. Batch related decisions into as few prompts as possible so the run isn't chopped up. Absent a business decision, keep going to the open PR.
 
-The **final PR merge is a release decision and stays with the human** — create the PR, then stop. Never merge, and never remove the worktree, without explicit human confirmation.
+**Reviews are OFF by default (0.25.0).** No reviewer wave, no PR-review cycle and no manual review gate before a merge: they delayed delivery. Turn them on per run with the `with-reviews` flag, or per project in its CLAUDE.md.
+
+The agent **merges its own PR into the integration branch** (staging / develop / the project's base branch) once lint, type-check, tests, build and the browser check are green on the head merged with that branch, then deploys the non-production environments. **A merge or release to production** (`main`/`production`, or a base branch that deploys straight to production) **waits for the human's go.** Never remove the worktree before the merge has happened.
 
 ## Phase −1 — Project setup check (automatic, every run)
 Before intake, check the PRIMARY checkout (`MAIN_ROOT=$(dirname "$(git rev-parse --git-common-dir)")`, or the cwd when it is not a git repo):
@@ -48,10 +50,10 @@ Then run Phase 0 onward with those answers.
 | integrations-dev | Paymob, WebEngage, LiteAPI, or other third-party/webhook work |
 | unit-test-engineer | Always — testing wave, enforces 90%/100% coverage gate |
 | e2e-playwright | Always for user-facing features — Playwright E2E per acceptance criteria |
-| code-reviewer | Always — reviews the CODE (correctness, layering, blast radius, scope creep); qa-reviewer reviews behaviour, this reviews the diff |
-| qa-reviewer | Always |
-| security-reviewer | Always (mandatory for auth/payments/user data) |
-| performance-reviewer | Always |
+| code-reviewer | Only with `with-reviews` (reviews are off by default) |
+| qa-reviewer | Only with `with-reviews` (reviews are off by default) |
+| security-reviewer | Only with `with-reviews` (reviews are off by default) |
+| performance-reviewer | Only with `with-reviews` (reviews are off by default) |
 | browser-verifier | Always for user-facing features — drives the REAL running app to prove the feature works. Cheaper than e2e-playwright; use it when there is no E2E infra, or alongside it as the acceptance gate |
 | devops-vercel | Infra/deploy/config tasks — usually solo, outside this pipeline |
 | git-ops | **Haiku** — commits, branches, the push, PR plumbing, worktree setup/teardown |
@@ -85,15 +87,15 @@ Still 3–5 active teammates max: a specialist replaces a generalist in the wave
 **Route mechanical work to the Haiku agents.** Committing, the push, branch creation, PR opening, tracker updates and attachment uploads all go to **git-ops** / **clickup-ops**: never spend an implementation or review agent's tokens on plumbing.
 
 Feature-type presets:
-- **Migration (e.g. Protectra/Blanka parity)**: legacy-analyst → planner → frontend+backend(+integrations) → 4 reviewers → browser-verifier.
-- **New feature (e.g. HolidayMarket)**: ba-analyst → (prototype-builder if visual sign-off needed) → planner → frontend+backend(+integrations) → 4 reviewers → browser-verifier.
+- **Migration (e.g. Protectra/Blanka parity)**: legacy-analyst → planner → frontend+backend(+integrations) → tests → browser-verifier (→ 4 reviewers only with `with-reviews`).
+- **New feature (e.g. HolidayMarket)**: ba-analyst → (prototype-builder if visual sign-off needed) → planner → frontend+backend(+integrations) → tests → browser-verifier (→ 4 reviewers only with `with-reviews`).
 - **Infra fix**: devops-vercel alone; skip the pipeline.
 - **Figma-driven UI**: use `/softonoma-orchestrator:figma-to-ui` instead of this pipeline for a single design surface; use this pipeline when the design is one part of a larger feature.
 - **Production errors** (softonoma-ops pack, Axiom): `/softonoma-ops:axiom-triage` pulls the real error groups, root-causes them and fixes with regression tests.
-- **SQL-backed project**: add database-architect (softonoma-databases) at planning when the schema is new or changing shape; db-performance-reviewer during review.
+- **SQL-backed project**: add database-architect (softonoma-databases) at planning when the schema is new or changing shape; db-performance-reviewer only with `with-reviews`.
 - **Release to production**: run `/softonoma-orchestrator:release-readiness` (go/no-go, smoke tests, rollback) alongside production-launch.
 
-**Nothing is "done" before it has been run.** Lint, build, tests and the review wave all read code;
+**Nothing is "done" before it has been run.** Lint, build, tests (and the review wave, when it runs) all read code;
 only browser-verifier proves the feature actually works. Do not report a user-facing feature complete
 on green gates alone — and if browser tooling is unavailable, say so explicitly in the PR rather than
 letting an unverified feature read as verified.
@@ -125,16 +127,16 @@ Ledger discipline (lead's job, Phases 3–5): every claim/completion/block is a 
 ## Phase 4a — Test wave (parallel)
 All implementation tasks complete → spawn "unit-tests" (unit-test-engineer) and "e2e" (e2e-playwright). Gate: changed-files coverage ≥ 90% (100% on business-logic modules) and all E2E scenarios mapped 1:1 to acceptance criteria and green. Coverage gaming (assertion-free tests, unjustified exclusions) is a BLOCKER.
 
-## Phase 4b — Review wave (parallel)
-Test wave green → spawn "code-review" (code-reviewer), "qa", "security", "performance", minus any named in a **`skip-<agent>`** flag (e.g. `skip-performance` on a copy-only change; never skip security on auth, payments or user data). Name every skipped reviewer in the PR body. BLOCKER/MAJOR findings become new tasks; loop Phase 3→4 until zero blockers. These four all read code — none of them proves the feature runs, which is Phase 4c.
+## Phase 4b — Review wave (OPTIONAL: only with `with-reviews`; skip straight to 4c otherwise)
+When enabled: test wave green → spawn "code-review" (code-reviewer), "qa", "security", "performance", minus any named in a **`skip-<agent>`** flag (e.g. `skip-performance` on a copy-only change; never skip security on auth, payments or user data). Name every skipped reviewer in the PR body. BLOCKER/MAJOR findings become new tasks; loop Phase 3→4 until zero blockers. These four all read code — none of them proves the feature runs, which is Phase 4c.
 
 ## Phase 4c — Verify for real (the acceptance gate)
 Zero blockers → spawn "verify" (browser-verifier) against the worktree's dev server (port from `.worktree-port`), with the acceptance criteria from the spec/KB doc as its checklist. It reports PASS/FAIL/BLOCKED per criterion. A FAIL becomes a task and loops back to Phase 3. **Do not skip this for a user-facing feature and do not substitute green tests for it.** If browser tooling genuinely is not available, that is not a pass — record it as unverified in the PR body, explicitly, so the human knows to walk the checklist themselves. Against production data the verifier is read-only; tell it so in its spawn prompt.
 
 ## Phase 5 — PR (autonomous up to the merge decision)
-Run lint, typecheck, tests, build, and `scripts/coverage-gate.sh <base-branch>` — if any fails, loop back to Phase 3→4 and fix it yourself; the PR is not created while the coverage gate fails. **git-ops commits throughout Phases 3–4c but does not push**: the branch stays local until this gate is green. When everything is green, git-ops pushes the branch **once** (the first push for this feature) and creates the PR autonomously (summary, parity/acceptance checklist result, review findings + resolutions, test evidence, prototype path if any). This is the task's finish line: present the PR link + preview URL. If PR comments land, fix them with `/softonoma-orchestrator:pr-review-fix` (only the PR's files, at most 3 rounds): local commits, then **one** push for that round, never one per fix. **Merging is a release/business decision that stays with the human** — never merge yourself. Then proceed straight into Phase 6 cleanup (it's non-destructive and doesn't touch main).
+Run lint, typecheck, tests, build, and `scripts/coverage-gate.sh <base-branch>` — if any fails, loop back to Phase 3→4 and fix it yourself; the PR is not created while the coverage gate fails. **git-ops commits throughout Phases 3–4c but does not push**: the branch stays local until this gate is green. When everything is green, git-ops pushes the branch **once** (the first push for this feature) and creates the PR autonomously (summary, parity/acceptance checklist result, review findings + resolutions when reviews ran, test evidence, prototype path if any). Then merge it into the integration branch and deploy the non-production environments, per the merge rule at the top; a production merge or release waits for the human's go. If the human leaves PR comments, fix them with `/softonoma-orchestrator:pr-review-fix` (only the PR's files, at most 3 rounds): local commits, then **one** push for that round. Then proceed straight into Phase 6 cleanup (it's non-destructive and doesn't touch main).
 
 ## Phase 6 — Cleanup (autonomous, except worktree removal)
-Run these without waiting for approval, since the PR is already open: planner moves plan AND its `.team/` ledger to `plans/done/` (immutable audit trail) and appends the implementation log to the KB doc; update the product knowledge base per the product-kb skill (pages whose user-facing behavior changed + refreshed screenshots via kb-screenshots.mjs against the worktree's dev port); close the tracking items: mark remaining team tasks complete, and if a Vibe Kanban MCP is configured update/close this feature's VK task (otherwise VK completes the card automatically when the PR merges) and post the closing comment on the ClickUp task per clickup-workflows; shut down all teammates. **Only worktree removal waits for the human** — once the developer confirms the PR is merged, run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/worktree.sh remove <feature>` (removing it earlier would discard the branch's checkout).
+Run these without waiting for approval, since the PR is already open: planner moves plan AND its `.team/` ledger to `plans/done/` (immutable audit trail) and appends the implementation log to the KB doc; update the product knowledge base per the product-kb skill (pages whose user-facing behavior changed + refreshed screenshots via kb-screenshots.mjs against the worktree's dev port); close the tracking items: mark remaining team tasks complete, and if a Vibe Kanban MCP is configured update/close this feature's VK task (otherwise VK completes the card automatically when the PR merges) and post the closing comment on the ClickUp task per clickup-workflows; shut down all teammates. Remove the worktree once the PR is merged: run `bash ${CLAUDE_PLUGIN_ROOT}/scripts/worktree.sh remove <feature>` (removing it earlier would discard the branch's checkout).
 
-Global rules: never skip a **quality** gate (coverage, zero-blockers, DoD, tests green) — enforce them by looping, not by asking; the only human stops are genuine business decisions and the final merge. No task completes without its Definition of Done; every artifact (spec, KB, plan, tasks, findings) lives on disk so the pipeline survives session loss.
+Global rules: never skip a **quality** gate (coverage, zero-blockers, DoD, tests green) — enforce them by looping, not by asking; the only human stops are genuine business decisions and a production merge or release. No task completes without its Definition of Done; every artifact (spec, KB, plan, tasks, findings) lives on disk so the pipeline survives session loss.

@@ -1,6 +1,6 @@
 # softonoma-mobile
 
-Optional pack for **softonoma-orchestrator** (version 0.24.0). Mobile specialists (iOS, React Native) and the full Expo/EAS/React Native skill set. Enable in React Native / Expo projects (the core mobile-dev agent and expo-react-native skill stay in the core).
+Optional pack for **softonoma-orchestrator** (version 0.25.0). Mobile specialists (iOS, React Native) and the full Expo/EAS/React Native skill set. Enable in React Native / Expo projects (the core mobile-dev agent and expo-react-native skill stay in the core).
 
 ## Enable it
 ```

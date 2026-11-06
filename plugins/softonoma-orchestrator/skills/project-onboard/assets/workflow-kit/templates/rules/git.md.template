@@ -10,7 +10,7 @@ The stories behind each rule: `.claude/knowledgebase/lessons/git.md` (add one wh
 - Branch from `{{BASE_BRANCH}}` (`feat/<short-name>`, `fix/<short>`); never commit to `{{DEFAULT_BRANCH}}` directly; continue a matching remote branch if one exists.
 - Commit per logical slice with a clear message, ending `Co-Authored-By: <the model that made the commit> <noreply@anthropic.com>`.
 - **Push ONCE, when the feature is ready and its gate green** (every push runs the pre-push hooks and usually a preview deploy). The one extra push is a backup when a session ends with commits only local.
-- Open the PR into `{{BASE_BRANCH}}`, run the AI review cycle (`pr-review-cycle`, at most 3 rounds), hand the URL to the developer. **The developer tests and merges; an agent never merges.**
+- Open the PR into `{{BASE_BRANCH}}` and merge it yourself (`gh pr merge --merge --match-head-commit <sha>`) once the gate is green on the head merged with `{{BASE_BRANCH}}`; then deploy the non-production environments. No review step by default: the AI review cycle (`pr-review-cycle`) runs only when the developer asks. **A merge or release to production waits for the developer's go.**
 - Never force-push a shared branch; never `--no-verify`; never commit secrets (git-ignored and hook-blocked).
 
 ## One worktree per agent

@@ -1,6 +1,6 @@
 # softonoma-data-ai
 
-Optional pack for **softonoma-orchestrator** (version 0.24.0). AI, ML and data agents (ai-engineer, ml-engineer, data-engineer, data-scientist). Enable in projects with LLM features, model serving, pipelines or analytics.
+Optional pack for **softonoma-orchestrator** (version 0.25.0). AI, ML and data agents (ai-engineer, ml-engineer, data-engineer, data-scientist). Enable in projects with LLM features, model serving, pipelines or analytics.
 
 ## Enable it
 ```

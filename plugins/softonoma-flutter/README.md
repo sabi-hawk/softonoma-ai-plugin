@@ -1,6 +1,6 @@
 # softonoma-flutter
 
-Optional pack for **softonoma-orchestrator** (version 0.24.0). Flutter/Dart: the flutter-expert agent and the Flutter and Dart skills. Enable in Flutter projects.
+Optional pack for **softonoma-orchestrator** (version 0.25.0). Flutter/Dart: the flutter-expert agent and the Flutter and Dart skills. Enable in Flutter projects.
 
 ## Enable it
 ```

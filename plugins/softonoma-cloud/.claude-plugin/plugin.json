@@ -1,6 +1,6 @@
 {
   "name": "softonoma-cloud",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "description": "Cloud and infrastructure: AWS, Azure, Google Cloud, Terraform, Docker and GitHub Actions skills, plus cloud, Kubernetes, Terraform, deployment, observability and troubleshooting agents. Enable in projects hosted on those platforms.",
   "author": {
     "name": "Softonoma"

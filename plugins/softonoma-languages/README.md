@@ -1,6 +1,6 @@
 # softonoma-languages
 
-Optional pack for **softonoma-orchestrator** (version 0.24.0). Language specialist agents (C#, Django, FastAPI, Go, Java, JavaScript, PHP, Python, Rust, shell, SQL, TypeScript, GraphQL) and shell-scripting skills. Enable in projects whose stack goes beyond the core Next.js/NestJS/FastAPI builders.
+Optional pack for **softonoma-orchestrator** (version 0.25.0). Language specialist agents (C#, Django, FastAPI, Go, Java, JavaScript, PHP, Python, Rust, shell, SQL, TypeScript, GraphQL) and shell-scripting skills. Enable in projects whose stack goes beyond the core Next.js/NestJS/FastAPI builders.
 
 ## Enable it
 ```
