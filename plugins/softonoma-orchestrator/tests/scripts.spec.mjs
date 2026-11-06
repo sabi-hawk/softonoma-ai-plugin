@@ -255,7 +255,7 @@ test('worktree-guard.sh: a backslash/drive path to code on main is blocked even 
 test('worktree-guard.sh: backslash paths to *.md, docs/ and .claude/ on main are allowed; the opt-out allows code', async () => {
   const repo = initRepo(path.join(tmp('wgw2'), 'repo'));
   const elsewhere = tmp('wgw2-other');
-  for (const rel of ['notes.md', 'docs/x.ts', '.claude/rules/x.ts']) {
+  for (const rel of ['notes.md', 'docs/x.ts', '.claude/rules/x.ts', '.gitignore', '.env.example']) {
     const r = await guardRun(winPath(path.join(repo, ...rel.split('/'))), elsewhere);
     assert.equal(r.code, 0, `${rel} on main must be allowed:\n` + r.err);
   }

@@ -14,7 +14,7 @@
 # judged every edit against the session's repo, which is why some projects had
 # to switch it off). Path handling ported from the Alfred orchestrator 0.21.0.
 #
-# Never blocked: docs/config (`.claude/`, `plans/`, `knowledge-base/`,
+# Never blocked: docs/config (`.claude/`, `plans/`, `knowledge-base/`, `.gitignore`, `.gitattributes`, `.editorconfig`, `.env.example`,
 # `prototypes/`, `docs/`, any `*.md`). Per-repo opt-out for repos that should
 # never be guarded: `git config softonoma.worktreeGuard off`.
 set -u
@@ -31,6 +31,8 @@ path=$(printf '%s' "$raw" | sed -e 's/\\\\/\\/g' -e 's/\\"/"/g' -e 's/\\\//\//g'
 # --- docs/config are never code: always allowed -----------------------------
 case "/$path" in
   */.claude/*|*/plans/*|*/knowledge-base/*|*/prototypes/*|*/docs/*|*.md) exit 0 ;;
+  # repo config, not code: onboarding writes these on a fresh main (0.24.0)
+  */.gitignore|*/.gitattributes|*/.editorconfig|*/.env.example) exit 0 ;;
 esac
 
 PROJECT="${CLAUDE_PROJECT_DIR:-$PWD}"

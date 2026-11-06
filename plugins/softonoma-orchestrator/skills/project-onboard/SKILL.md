@@ -57,6 +57,8 @@ tests and merges), the timezone for change-log entries, hard rules that must nev
 testing (Playwright) yes/no**, and the packs you chose (pre-selected; the owner may add or remove).
 
 ## Step 3 — Create the structure (Modes A, B, C)
+**Work on a branch, not on the default branch.** In a git repo, create `chore/softonoma-onboarding` from the current branch first (`git checkout -b chore/softonoma-onboarding`): the worktree guard blocks code edits on `main`/`master`/`develop`/`staging`/`production`, and the setup is reviewed like any change (the developer merges it). `.claude/`, `docs/`, `*.md`, `.gitignore`, `.gitattributes`, `.editorconfig` and `.env.example` are never blocked. Writes under `.claude/` ask for the developer's approval in a normal session: that is Claude Code protecting its own config folder; let them approve, never work around it.
+
 Create exactly the tree in `WORKFLOW.md` §2, from the templates:
 
 | Target | Template |

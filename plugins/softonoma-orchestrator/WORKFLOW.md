@@ -118,7 +118,7 @@ picks them from what it detects (`package.json`, `pubspec.yaml`, `*.tf`, `go.mod
 ## 6. Safety rails
 
 - The **worktree guard** blocks code edits on `main`/`master`/`develop`/`staging`/`production` in a primary
-  checkout (docs, `.claude/`, `plans/` and `*.md` are always allowed; Windows paths supported). Opt a repo out:
+  checkout (docs, `.claude/`, `plans/`, `*.md`, `.gitignore` and `.env.example` are always allowed; Windows paths supported). Opt a repo out:
   `git config softonoma.worktreeGuard off`.
 - The **secret hook** blocks writes of credentials and `.env` files.
 - The **task gate** runs lint/typecheck (JS/TS), compile/tests (Python) or pint (PHP) when a task completes.
