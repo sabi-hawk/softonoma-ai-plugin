@@ -43,71 +43,127 @@ function listDirs(p) {
   return fs.readdirSync(p, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
 }
 
-// ----------------------------------------------------------------- skills
-test('every skills/*/SKILL.md has valid frontmatter (name + description)', () => {
-  const skillsDir = path.join(ROOT, 'skills');
-  const dirs = listDirs(skillsDir);
-  assert.ok(dirs.length > 0, 'expected skill dirs');
-  for (const d of dirs) {
-    const file = path.join(skillsDir, d, 'SKILL.md');
-    assert.ok(fs.existsSync(file), `${d}/SKILL.md must exist`);
-    const fm = parseFrontmatter(fs.readFileSync(file, 'utf8'));
-    assert.ok(fm, `${d}/SKILL.md must have YAML frontmatter`);
-    assert.ok(fm.name && fm.name.length, `${d}/SKILL.md frontmatter must have a name`);
-    assert.ok(fm.description && fm.description.length, `${d}/SKILL.md frontmatter must have a description`);
+// ------------------------------------------------- marketplace plugins
+// The repository-root marketplace lists the core and the optional packs (0.24.0).
+// Every check below runs over ALL of them, not just the core.
+const MARKET_ROOT = path.resolve(ROOT, '..', '..');
+const MARKET = JSON.parse(fs.readFileSync(path.join(MARKET_ROOT, '.claude-plugin', 'marketplace.json'), 'utf8'));
+const LOCAL_PLUGINS = MARKET.plugins
+  .filter((p) => typeof p.source === 'string')
+  .map((p) => ({ name: p.name, dir: path.resolve(MARKET_ROOT, p.source) }));
+const skillDirsOf = (p) => (fs.existsSync(path.join(p.dir, 'skills')) ? listDirs(path.join(p.dir, 'skills')) : []);
+const agentFilesOf = (p) => (fs.existsSync(path.join(p.dir, 'agents'))
+  ? fs.readdirSync(path.join(p.dir, 'agents')).filter((n) => n.endsWith('.md')) : []);
+
+test('marketplace: every plugins/* dir is listed, each has a valid plugin.json whose name matches', () => {
+  const onDisk = listDirs(path.join(MARKET_ROOT, 'plugins')).sort();
+  const listed = LOCAL_PLUGINS.map((p) => path.basename(p.dir)).sort();
+  assert.deepEqual(listed, onDisk, 'marketplace.json must list exactly the plugin folders on disk');
+  for (const p of LOCAL_PLUGINS) {
+    const pj = JSON.parse(fs.readFileSync(path.join(p.dir, '.claude-plugin', 'plugin.json'), 'utf8'));
+    assert.equal(pj.name, p.name, `${p.dir}: plugin.json name must equal the marketplace entry`);
+    assert.match(pj.version, /^\d+\.\d+\.\d+$/, `${p.name}: semver version`);
   }
+  assert.ok(LOCAL_PLUGINS.some((p) => p.name === 'softonoma-orchestrator'), 'the core must be listed');
 });
 
-test('every ${CLAUDE_PLUGIN_ROOT} path referenced in a SKILL.md exists', () => {
-  const skillsDir = path.join(ROOT, 'skills');
+test('totals across the core and the packs: at least 64 agents and 263 skills, no duplicate names', () => {
+  const agents = LOCAL_PLUGINS.flatMap((p) => agentFilesOf(p).map((f) => f.replace(/\.md$/, '')));
+  const skills = LOCAL_PLUGINS.flatMap(skillDirsOf);
+  assert.ok(agents.length >= 64, `expected >= 64 agents, got ${agents.length}`);
+  assert.ok(skills.length >= 263, `expected >= 263 skills, got ${skills.length}`);
+  const dup = (a) => a.filter((x, i) => a.indexOf(x) !== i);
+  assert.deepEqual(dup(agents), [], 'an agent name must live in exactly one plugin');
+  assert.deepEqual(dup(skills), [], 'a skill name must live in exactly one plugin');
+});
+
+// ----------------------------------------------------------------- skills
+test('every skills/*/SKILL.md (core and packs) has valid frontmatter (name + description)', () => {
+  let n = 0;
+  for (const p of LOCAL_PLUGINS) {
+    for (const d of skillDirsOf(p)) {
+      const file = path.join(p.dir, 'skills', d, 'SKILL.md');
+      assert.ok(fs.existsSync(file), `${p.name}/${d}/SKILL.md must exist`);
+      const fm = parseFrontmatter(fs.readFileSync(file, 'utf8'));
+      assert.ok(fm, `${p.name}/${d}/SKILL.md must have YAML frontmatter`);
+      assert.ok(fm.name && fm.name.length, `${p.name}/${d}/SKILL.md frontmatter must have a name`);
+      assert.ok(fm.description && fm.description.length, `${p.name}/${d}/SKILL.md frontmatter must have a description`);
+      n++;
+    }
+  }
+  assert.ok(n > 0, 'expected skill dirs');
+});
+
+test('every ${CLAUDE_PLUGIN_ROOT} path referenced in a SKILL.md exists in that skill\'s own plugin', () => {
   const rx = /\$\{CLAUDE_PLUGIN_ROOT\}\/([^\s`)'"]+)/g;
   let checked = 0;
-  for (const d of listDirs(skillsDir)) {
-    const file = path.join(skillsDir, d, 'SKILL.md');
-    const text = fs.readFileSync(file, 'utf8');
-    let m;
-    while ((m = rx.exec(text))) {
-      let rel = m[1].replace(/[.,;:)]+$/, ''); // strip trailing punctuation
-      const abs = path.join(ROOT, rel);
-      assert.ok(fs.existsSync(abs), `${d}/SKILL.md references missing path: \${CLAUDE_PLUGIN_ROOT}/${rel}`);
-      checked++;
+  for (const p of LOCAL_PLUGINS) {
+    for (const d of skillDirsOf(p)) {
+      const text = fs.readFileSync(path.join(p.dir, 'skills', d, 'SKILL.md'), 'utf8');
+      let m;
+      while ((m = rx.exec(text))) {
+        const rel = m[1].replace(/[.,;:)]+$/, ''); // strip trailing punctuation
+        assert.ok(fs.existsSync(path.join(p.dir, rel)), `${p.name}/${d}/SKILL.md references missing path: \${CLAUDE_PLUGIN_ROOT}/${rel}`);
+        checked++;
+      }
     }
   }
   assert.ok(checked > 0, 'expected at least one CLAUDE_PLUGIN_ROOT reference to validate');
 });
 
-// ----------------------------------------------------------------- agents
-test('every agents/*.md has valid frontmatter and a legal model', () => {
-  const agentsDir = path.join(ROOT, 'agents');
-  const allowedModels = new Set(['sonnet', 'opus', 'haiku', 'inherit']);
-  const files = fs.readdirSync(agentsDir).filter((f) => f.endsWith('.md'));
-  assert.ok(files.length >= 10, 'expected the full agent roster');
+test('plugin commands/*.md have a description and point at a skill that exists', () => {
+  const dir = path.join(ROOT, 'commands');
+  const files = fs.readdirSync(dir).filter((n) => n.endsWith('.md'));
+  assert.ok(files.includes('new-project.md') && files.includes('upgrade-project.md'), 'onboarding commands must exist');
+  const coreSkills = new Set(listDirs(path.join(ROOT, 'skills')));
   for (const f of files) {
-    const fm = parseFrontmatter(fs.readFileSync(path.join(agentsDir, f), 'utf8'));
-    assert.ok(fm, `${f} must have frontmatter`);
-    assert.ok(fm.name && fm.name.length, `${f} must have a name`);
-    assert.ok(fm.description && fm.description.length, `${f} must have a description`);
-    if (fm.model !== undefined) {
-      assert.ok(allowedModels.has(fm.model), `${f} model '${fm.model}' must be one of sonnet/opus/haiku/inherit`);
+    const text = fs.readFileSync(path.join(dir, f), 'utf8');
+    const fm = parseFrontmatter(text);
+    assert.ok(fm && fm.description, `${f} must have a description`);
+    for (const m of text.matchAll(/softonoma-orchestrator:([a-z0-9-]+)/g)) {
+      const name = m[1];
+      const isCommand = files.includes(name + '.md');
+      assert.ok(coreSkills.has(name) || isCommand, `${f} references '${name}', which is neither a core skill nor a command`);
     }
   }
 });
 
-test('every skill named in an agent "Skills to use" section resolves to a real skill dir', () => {
-  const skillsDir = path.join(ROOT, 'skills');
-  const known = new Set(listDirs(skillsDir));
-  const agentsDir = path.join(ROOT, 'agents');
+// ----------------------------------------------------------------- agents
+test('every agents/*.md (core and packs) has valid frontmatter and a legal model', () => {
+  const allowedModels = new Set(['sonnet', 'opus', 'haiku', 'inherit']);
+  const core = LOCAL_PLUGINS.find((p) => p.name === 'softonoma-orchestrator');
+  assert.ok(agentFilesOf(core).length >= 10, 'expected the full core agent roster');
+  for (const p of LOCAL_PLUGINS) {
+    for (const f of agentFilesOf(p)) {
+      const fm = parseFrontmatter(fs.readFileSync(path.join(p.dir, 'agents', f), 'utf8'));
+      assert.ok(fm, `${p.name}/${f} must have frontmatter`);
+      assert.ok(fm.name && fm.name.length, `${p.name}/${f} must have a name`);
+      assert.ok(fm.description && fm.description.length, `${p.name}/${f} must have a description`);
+      if (fm.model !== undefined) {
+        assert.ok(allowedModels.has(fm.model), `${p.name}/${f} model '${fm.model}' must be one of sonnet/opus/haiku/inherit`);
+      }
+    }
+  }
+});
+
+test('every skill named in an agent "Skills to use" section resolves to a skill in the core or a pack', () => {
+  const known = new Set(LOCAL_PLUGINS.flatMap(skillDirsOf));
   let checked = 0;
-  for (const f of fs.readdirSync(agentsDir).filter((n) => n.endsWith('.md'))) {
-    const text = fs.readFileSync(path.join(agentsDir, f), 'utf8');
-    const i = text.indexOf('## Skills to use');
-    if (i === -1) continue;
-    const section = text.slice(i);
-    const rx = /^-\s+\*\*([a-z0-9-]+)\*\*/gm;
-    let m;
-    while ((m = rx.exec(section))) {
-      assert.ok(known.has(m[1]), `${f} references skill '${m[1]}' but skills/${m[1]}/ does not exist`);
-      checked++;
+  for (const p of LOCAL_PLUGINS) {
+    for (const f of agentFilesOf(p)) {
+      const text = fs.readFileSync(path.join(p.dir, 'agents', f), 'utf8').replace(/\r\n/g, '\n');
+      const i = text.indexOf('## Skills to use');
+      if (i === -1) continue;
+      // the section runs to the next level-2 heading (a later "## Working with …" lists AGENTS, not skills)
+      const rest = text.slice(i + 3);
+      const j = rest.search(/^## /m);
+      const section = j === -1 ? rest : rest.slice(0, j);
+      const rx = /^-\s+\*\*([a-z0-9-]+)\*\*/gm;
+      let m;
+      while ((m = rx.exec(section))) {
+        assert.ok(known.has(m[1]), `${p.name}/${f} references skill '${m[1]}' but no plugin has skills/${m[1]}/`);
+        checked++;
+      }
     }
   }
   assert.ok(checked >= 20, `expected many agent→skill references (got ${checked})`);

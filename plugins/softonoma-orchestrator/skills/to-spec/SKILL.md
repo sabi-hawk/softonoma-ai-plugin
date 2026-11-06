@@ -2,6 +2,7 @@
 name: to-spec
 description: Turn the current conversation into a spec and publish it to the project issue tracker — no interview, just synthesis of what you've already discussed.
 disable-model-invocation: true
+license: MIT
 ---
 <!-- Vendored from mattpocock/skills (MIT) — skills/engineering/to-spec — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

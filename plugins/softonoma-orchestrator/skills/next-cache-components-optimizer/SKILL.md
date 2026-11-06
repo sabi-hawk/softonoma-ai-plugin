@@ -4,6 +4,7 @@ description: >
   Optimize a Next.js app that has `cacheComponents: true` — either the static
   shell on first paint, or the in-app navigation between routes. Picks the
   matching diagnostic loop and runs it.
+license: MIT
 ---
 <!-- Vendored from skills.sh: vercel/next.js — skills/next-cache-components-optimizer/SKILL.md — synced 2026-07-17. Re-sync: npx skills add vercel/next.js --skill next-cache-components-optimizer -->
 

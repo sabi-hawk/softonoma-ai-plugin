@@ -1,6 +1,7 @@
 ---
 name: writing-plans
 description: Use when you have a spec or requirements for a multi-step task, before touching code
+license: MIT
 ---
 <!-- Vendored from obra/superpowers (MIT) — skills/writing-plans — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

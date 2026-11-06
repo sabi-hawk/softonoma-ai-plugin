@@ -1,6 +1,7 @@
 ---
 name: receiving-code-review
 description: Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation
+license: MIT
 ---
 <!-- Vendored from obra/superpowers (MIT) — skills/receiving-code-review — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

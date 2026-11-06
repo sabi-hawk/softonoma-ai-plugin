@@ -44,7 +44,7 @@ against the live docs — the API moves: **https://better-auth.com/docs**.
 7. Verify: `GET /api/auth/ok` returns `{ status: "ok" }`.
 8. Build the sign-in / sign-up (and password-reset / verification) pages.
 
-## Softonoma-specific rules
+## Alfred-specific rules
 
 - Secrets and all Better Auth server calls live in server code only.
 - Prefer **Redis as `secondaryStorage`** (see `better-auth-best-practices` and

@@ -35,7 +35,7 @@ AskUserQuestion: "What do you want to do?" → options: **Create a team** / **Li
 ## Listing teams (if asked, do only this and stop)
 Read `$TEAMS_DIR/*.json` and show a compact table: team name, roster (comma-separated), default model, created by/at. If asked about one team, show its full JSON. If the folder is empty, say so and offer to create one. Teams are per-project — mention that other repos have their own.
 
-You are running a one-time (per project) setup wizard. Output of this skill is a saved team template at `.claude/softonoma-team.json` — NOT any code and NOT a running team.
+You are running a one-time (per project) setup wizard. Output of this skill is a saved team template at `.claude/teams/<team-name>.json` (in the PRIMARY checkout, per the rules above) — NOT any code and NOT a running team.
 
 ## Phase 1 — Name and mode (runs only after "Create a team" was chosen; do not read any project files yet)
 Ask exactly two questions before touching the filesystem — both via AskUserQuestion (batching them into one two-tab form is good):
@@ -56,7 +56,7 @@ setup yet, the first pipeline run scaffolds it via the e2e-playwright agent). No
 `e2e-playwright` out of the roster and set `"e2e": { "playwright": false }`; it stays available
 on-demand.
 
-Both modes: optionally set default teammate model (default sonnet) and max parallel (default 5).
+Both modes: optionally set default teammate model — `sonnet` (default), `opus` or `haiku`; never Fable, Opus is the ceiling — and max parallel (default 4; each extra teammate multiplies token use).
 
 ## Phase 3 — Save the template
 Write `$TEAMS_DIR/<team-name>.json` (multiple teams per project are expected — e.g. a build team and a review team):
@@ -74,6 +74,6 @@ Also: create `plans/{upcoming,in-progress,done}/` and `knowledge-base/` if missi
 
 ## Phase 4 — Tell the user how to work from now on
 
-Explain, briefly: "Team '<name>' is saved. Use it by naming it in your prompt: `/softonoma-orchestrator:orchestrate-feature team <name>: <feature + doc/link>` or `/softonoma-orchestrator:review-pr team <name>: <pr>`. If the project has only one team, naming it is optional. Re-run /agent-team-orc anytime to add another team or change a roster."
+Explain, briefly: "Team '<name>' is saved. Use it by naming it in your prompt: `/softonoma-orchestrator:orchestrate-feature team <name>: <feature + doc/link>` or `/softonoma-orchestrator:review-pr team <name>: <pr>` (or `/softonoma-orchestrator:pr-review-fix` to also fix it, at most 3 rounds). If the project has only one team, naming it is optional. Re-run /agent-team-orc anytime to add another team or change a roster."
 
 Rules: never spawn teammates from this wizard; never overwrite an existing team file without showing a diff and confirming; keep the wizard to 2 questions in manual mode (name, roster) plus the optional description, ~4 in automatic mode.

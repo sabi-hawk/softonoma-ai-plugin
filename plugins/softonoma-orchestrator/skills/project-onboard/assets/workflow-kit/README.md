@@ -19,12 +19,13 @@ ai-workflow-kit/
     ├── CLAUDE.md.template
     ├── settings.json.template
     ├── hooks/                (block-secret-writes.mjs — ready to use as-is)
-    ├── rules/                (security · testing · conventions · git)
-    ├── agents/               (context-gatherer · security-reviewer · quality-reviewer · professional-qa)
-    ├── skills/               (feature-workflow · db-change · browser-verify · find-skills)
-    ├── knowledgebase/        (3-part KB: modules/ durable truth · frds/ requirement specs · reference/ origin)
+    ├── rules/                (security · testing · conventions · git · change-log)
+    ├── agents/               (context-gatherer · pr-reviewer · security-reviewer · quality-reviewer · professional-qa)
+    ├── skills/               (feature-workflow · deep-research · pr-review-cycle · db-change · browser-verify · qa-review · find-skills)
+    ├── knowledgebase/        (modules/ · research/ · lessons/ · 07-change-log + archive · frds/ and reference/ for large initiatives)
     ├── database/             (database.md.template — schema index)
-    └── plans/                (README — optional lightweight plan lifecycle)
+    ├── plans/                (README, TEMPLATE, CARRY-OVER — one plan file per ticket)
+    └── docs/                 (SETUP.md.template — what a new machine needs)
 ```
 
 ## How to use it (two minutes)

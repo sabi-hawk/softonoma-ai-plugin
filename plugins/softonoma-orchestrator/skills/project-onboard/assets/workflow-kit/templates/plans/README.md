@@ -1,28 +1,30 @@
-# Plans — optional, lightweight
+# Plans: one file per ticket
 
-Most work comes from the owner in chat and is small enough to just do (capture it in the knowledge
-base and go — see the `feature-workflow` skill). **Plans are optional**, only worth it for a
-multi-step initiative worth tracking across sessions.
+**Every ticket gets a plan file, `inprogress/<TICKET>.md`, before any code.** It is the offline memory:
+builders work from it instead of from chat messages, and the next task in the same area starts from it.
+Start from `TEMPLATE.md`.
 
-A plan is a folder; its **lifecycle is the folder it sits in**:
+- **The lead writes** the header, Problem, Scope, Decisions and, for any change to a RULE (concurrency, dates,
+  money, notifications, who may do what), **the case table FIRST**: each row a situation, its expected result
+  and the test that pins it. The builder implements against the table; reviewers probe the table, not only the code.
+- **The builder keeps `## Status (builder)` current**: last commit, pushed or not, gate result at which head,
+  what is next. The lead reads the file rather than waiting for a message.
+- **On merge** the plan moves to `done/` with an `## Outcome` (PRs, merge commits, environments, ticket state).
+- A ticket too small for a case table still gets the file: header, Problem, Scope, Status. Five lines is fine.
+- Follow-ups that outlive their ticket go in `CARRY-OVER.md` (one line each), not only in the closed plan.
+
 ```
-plans/
+.claude/plans/
 ├── backlog/      ← captured but parked (not scheduled)
 ├── upcoming/     ← agreed, not started
-├── inprogress/   ← active; has a tasks.md checklist
-└── done/         ← shipped record
+├── inprogress/   ← active (one <TICKET>.md each; a team run adds <module>.team/ beside it)
+├── done/         ← shipped record (immutable)
+├── TEMPLATE.md
+└── CARRY-OVER.md
 ```
 
-> For **large, multi-module initiatives**, a plan is preceded by an **FRD** — the agreed per-module
-> requirements spec in `../knowledgebase/frds/`. A plan is promoted from an **Approved** FRD and links
-> back to it. Small/mid changes go straight to a plan (or just get built). See `../knowledgebase/frds/README.md`.
-
-## Shape (`NN-short-name/`)
-- `plan.md` — one page: what/why, approach, key files, how to verify. (For an FRD-backed module, link
-  the FRD instead of repeating its requirements.)
-- `tasks.md` (while `inprogress/`) — a `- [ ] / - [x]` checklist; note completion (commit/file/decision). Keep it current.
-
 ## Rules
-- **Move, don't copy** — a plan lives in exactly one folder.
-- On completion, fold durable knowledge into the knowledge base + database index, then move to `done/`.
-- No secrets / no PII in any plan doc.
+- **Move, don't copy**: a plan lives in exactly one folder (`git mv`).
+- Code and docs cite a plan at `.claude/plans/done/<TICKET>.md` from the start (it moves there on merge).
+- On completion, fold durable knowledge into the KB (`knowledgebase/modules/<module>`) and `database.md`.
+- No secrets and no personal data in any plan.

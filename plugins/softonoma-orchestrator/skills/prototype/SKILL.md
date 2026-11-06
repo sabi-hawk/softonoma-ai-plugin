@@ -1,6 +1,7 @@
 ---
 name: prototype
 description: Build a throwaway prototype to answer a design question. Use when the user wants to sanity-check whether a state model or logic feels right, or explore what a UI should look like.
+license: MIT
 ---
 <!-- Vendored from mattpocock/skills (MIT) — skills/engineering/prototype — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

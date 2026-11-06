@@ -1,6 +1,7 @@
 ---
 name: executing-plans
 description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
+license: MIT
 ---
 <!-- Vendored from obra/superpowers (MIT) — skills/executing-plans — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

@@ -199,3 +199,73 @@ Invoke these softonoma-orchestrator plugin skills (via the Skill tool) when they
 - **requesting-code-review** — package a change so it can be reviewed effectively.
 - **commit** — write clean conventional commits with issue references.
 - **pr-writer** — craft reviewer-facing PR titles and descriptions.
+
+### Angular (when the target repo is Angular, not Next.js)
+_These skills ship in the optional **softonoma-frontend-frameworks** pack: they exist only in projects that enable it (`/plugin install softonoma-frontend-frameworks@softonoma`, or project-onboard enables it when it detects the stack). If one is missing, say so and continue with the core skills._
+Prefer Angular's own idioms — do not port React patterns across.
+- **angular-developer** — start here: overall Angular v20+/v21 conventions.
+- **angular-new-app** — scaffolding a new Angular app.
+- **angular-signals** — signal/computed/linkedSignal reactive state.
+- **angular-component** — component authoring and inputs/outputs.
+- **angular-forms** — typed and signal forms.
+- **angular-routing** — router configuration and guards.
+- **angular-http** — HttpClient, interceptors, resource().
+- **angular-di** — dependency injection and providers.
+- **angular-directives** — structural and attribute directives.
+- **angular-ssr** — server-side rendering and hydration.
+- **angular-testing** — Angular test patterns.
+- **angular-tooling** — CLI, build and workspace tooling.
+
+### Vue / Nuxt
+- **vue-best-practices** — start here: Composition API + `<script setup lang="ts">`.
+- **vue-debug-guides** — diagnosing Vue reactivity and render bugs.
+- **vue-pinia-best-practices** — Pinia store design.
+- **vue-router-best-practices** — Vue Router patterns.
+- **vue-testing-best-practices** — Vue test patterns.
+- **vue-options-api-best-practices** — only when the project mandates Options API.
+- **vue-jsx-best-practices** — JSX/TSX in Vue.
+- **vue-adaptable-composable** — writing reusable composables.
+- **vueuse-functions** — VueUse composable reference.
+- **pinia** — Pinia specifics.
+- **nuxt** — Nuxt app structure and conventions.
+- **nuxt-ui** — Nuxt UI component library.
+- **nitro** — Nitro server engine and routes.
+
+### Svelte / Astro
+- **svelte-core-bestpractices** — Svelte 5 runes and current-gen patterns.
+- **svelte-code-writer** — writing idiomatic Svelte components.
+- **astro-framework** — Astro islands, content collections, adapters.
+- **astro-learning** — Astro fundamentals when ramping up.
+
+### React Native / Expo (small surfaces — delegate bigger work to mobile-dev, or mobile-developer from the pack)
+_These skills ship in the optional **softonoma-mobile** pack: they exist only in projects that enable it (`/plugin install softonoma-mobile@softonoma`, or project-onboard enables it when it detects the stack). If one is missing, say so and continue with the core skills._
+- **react-native-best-practices** — RN performance, lists, memory, bundles.
+- **expo-router** — Expo Router navigation.
+- **expo-data-fetching** — data fetching in Expo.
+- **expo-tailwind-setup** — NativeWind/Tailwind styling.
+- **expo-native-ui** — native UI primitives.
+- **react-navigation** — React Navigation patterns.
+
+### Build tooling
+- **vite** — Vite configuration and plugins.
+- **vitest** — unit testing outside the Next.js defaults.
+- **unocss** — UnoCSS atomic styling.
+- **vitepress** — docs sites.
+- **tsdown** — library bundling.
+- **pnpm** — workspace and dependency management.
+- **turborepo** — monorepo task orchestration.
+
+### Frontend quality gates
+- **web-accessibility** — WCAG conformance and remediation.
+- **core-web-vitals** — LCP/INP/CLS budgets.
+- **web-performance** — page-level performance work.
+- **web-quality-audit** — audit the finished UI.
+- **web-quality-best-practices** — general web quality baseline.
+- **seo-technical** — crawlability, indexation and rendering-mode choices.
+
+## Working with the other frontend agents
+- **flutter-expert** — all Flutter/Dart work; the `flutter-*` and `dart-*` skills live there, not here.
+- **mobile-developer** — anything beyond a small React Native surface (EAS builds, store submission, native modules, upgrades).
+- **ui-ux-designer** — when the visual direction itself is undecided rather than just unimplemented.
+- **accessibility-expert** — when a11y findings need a dedicated remediation pass.
+- **seo-structure-architect** — SEO strategy; you implement the rendering/metadata side of its recommendations.

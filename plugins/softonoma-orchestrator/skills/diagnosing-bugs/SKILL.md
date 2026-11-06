@@ -1,6 +1,7 @@
 ---
 name: diagnosing-bugs
 description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
+license: MIT
 ---
 <!-- Vendored from mattpocock/skills (MIT) — skills/engineering/diagnosing-bugs — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

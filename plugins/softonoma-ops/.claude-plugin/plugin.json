@@ -1,0 +1,13 @@
+{
+  "name": "softonoma-ops",
+  "version": "0.24.0",
+  "description": "Operations add-ons: Axiom log/metrics skills (triage, alerting, dashboards), the ClickUp CU lifecycle skills (raise-cu, pickup-cu, signoff-cu, verify-cu) and the kb skill with its /kb viewer indexer. Enable in projects using Axiom, the ClickUp lifecycle, or an in-app /kb.",
+  "author": {
+    "name": "Softonoma"
+  },
+  "keywords": [
+    "softonoma",
+    "pack",
+    "ops"
+  ]
+}

@@ -2,6 +2,7 @@
 name: playwright-cli
 description: Automate browser interactions, test web pages and work with Playwright tests.
 allowed-tools: Bash(playwright-cli:*) Bash(npx:*) Bash(npm:*)
+license: Apache-2.0
 ---
 <!-- Vendored from skills.sh: microsoft/playwright-cli — skills/playwright-cli/SKILL.md — synced 2026-07-17. Re-sync: npx skills add microsoft/playwright-cli --skill playwright-cli -->
 

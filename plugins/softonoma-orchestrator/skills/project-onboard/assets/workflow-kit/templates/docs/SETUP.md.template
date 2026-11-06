@@ -1,0 +1,31 @@
+# SETUP — what a developer's machine needs for {{PROJECT_NAME}}
+
+Read this before asking. **Add to it in the same change** whenever you introduce something a fresh clone
+needs (an env var, a file, an account). Never write a real secret value here.
+
+## 1. Tools
+| Tool | Version | Why |
+|---|---|---|
+| {{e.g. Node.js}} | {{version}} | {{…}} |
+| Claude Code + the `softonoma-orchestrator` plugin | latest | the AI workflow (`.claude/settings.json` declares the marketplace and packs) |
+
+## 2. Clone and install
+```
+{{git clone … && cd … && install command}}
+```
+
+## 3. Environment files
+| File | Copy from | Who provides the values |
+|---|---|---|
+| `.env` | `.env.example` (every key, commented) | {{owner / vault name}} |
+
+## 4. Accounts and access
+| Service | What you need | Who grants it |
+|---|---|---|
+| {{e.g. database, hosting, tracker}} | {{role}} | {{who}} |
+
+## 5. Check it works
+```
+{{dev command}}   # opens on {{port}}
+{{gate command}}  # must be green
+```

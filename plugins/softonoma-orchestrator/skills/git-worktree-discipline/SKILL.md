@@ -25,6 +25,7 @@ If launched from Vibe Kanban or Claude Squad the worktree already exists — do 
 
 ## Commits & cleanup
 - Commit early and often on the feature branch; conventional messages (`feat:`, `fix:`, `test:`, `refactor:`) with the plan task ID, e.g. `feat(T3): booking status API`.
+- **Push once, not per commit.** Commits stay local through implementation, test, and review waves. Push exactly once, when the branch is fully ready (right before PR creation in Phase 5), and at most once more per round of PR feedback, after every comment in that round is resolved. Every push runs the repo's pre-push hooks and usually a preview deployment (Vercel previews spend the account's data-transfer quota), so batching pushes is mandatory, not a style preference. The one extra push: a backup when a session ends with commits only local.
 - Never rebase/force-push a branch another teammate has checked out; coordinate via the lead.
 - After the human confirms the PR is merged: `worktree.sh remove <feature>`, which also runs `git worktree prune`. Stale worktrees older than the done plan are flagged by `worktree.sh list`.
 

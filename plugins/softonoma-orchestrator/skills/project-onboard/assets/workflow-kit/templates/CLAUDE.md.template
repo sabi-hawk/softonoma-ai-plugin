@@ -1,27 +1,51 @@
 # CLAUDE.md — {{PROJECT_NAME}}
 
-How any agent (or human) works in this repo. Detail lives in **`.claude/`** — this file is the map.
-Keep it lightweight and matched to how the owner actually works.
+How any agent (or human) works in this project. This file is the **map**; the detail lives in
+**`.claude/`** (rules, skills, agents, knowledge base, plans). Everything an agent needs is in the repo,
+so a new laptop or a lost chat changes nothing. The workflow itself is described in
+`.claude/WORKFLOW.md` (copied from the softonoma-orchestrator plugin at onboarding).
 
 ## 0. Prime directive — read `.claude/` first
-Before non-trivial work, read `.claude/knowledgebase/README.md` (product, architecture, business
-rules, status), `.claude/database/database.md` (schema — if this project has a DB), and `.claude/rules/`
-(security · testing · conventions · git). Ground decisions in these; if something's missing, decide
-sensibly and **write it down**.
+Before non-trivial work, read:
+- `.claude/knowledgebase/README.md` → product, business rules, status, and the module docs you'll touch.
+- `.claude/knowledgebase/07-change-log.md` → what was done, newest first: **read only its top** (about
+  150 lines); older months live in `07-change-log-archive/` and are searched with grep, never read whole.
+- `.claude/knowledgebase/research/` → existing research for the module (the grounding for a build).
+- `.claude/database/database.md` → the data-model index {{(drop if there is no database)}}.
+- `.claude/plans/` → one plan file per ticket (`inprogress/<TICKET>.md`); open follow-ups in `CARRY-OVER.md`.
+- `docs/SETUP.md` → what a developer's machine needs (env files and their `.example`, accounts). Add to it
+  when you introduce one.
+- `.claude/rules/` → security · testing · conventions · git · change-log{{ · design-language (UI) · …}}.
+  Rules with `paths:` at the top load only when you touch their files: read one by hand when you PLAN work
+  in its area. Each rule line links its story in `.claude/knowledgebase/lessons/`.
+
+Ground every decision in these. If something is missing, decide sensibly and **write it down** (research
+doc or KB file) in the same change.
 
 ## 1. What this is
 {{ONE_PARAGRAPH: what the product is, who uses it, the stack ({{STACK}}), and where it runs.}}
 
-## 2. Golden rules (never violate — detail in `.claude/rules/`)
-{{LIST the 4–8 non-negotiables for THIS project: core domain invariants, the permission/security
-model, data-integrity rules, and any framework pitfall the team keeps hitting.}}
+| Repo / app | Stack | Runs |
+|---|---|---|
+| {{REPO}} | {{STACK}} | {{PORT_OR_URL}} |
 
-## 3. How we work — the `feature-workflow` skill
+## 2. Golden rules (never violate — detail in `.claude/rules/`)
+{{LIST the 4–10 non-negotiables for THIS project: the core domain invariants, the permission/security
+model, data-integrity rules, and any framework pitfall the team keeps hitting. Always keep these:}}
+1. **Never commit secrets** (`.env*` except `.env.example`, keys). Hook-blocked.
+2. **Tests ship with the change**, written first and run; a test that cannot fail is worse than none.
+3. **Nothing is done until it has been run for real** (the browser for UI, the response for an API);
+   before that the report is "implemented and green".
+4. **The knowledge base ships with the change**, and every change is logged in `07-change-log.md`
+   when it is made (`.claude/rules/change-log.md`).
+5. **Reuse, don't reinvent.** Existing patterns; the smallest correct change.
+
+## 3. How we work — the feature workflow
 Every change follows `.claude/skills/feature-workflow/SKILL.md`:
-capture the requirement → ground in the KB/code → decide (record notable choices; ask the owner only
-on big/irreversible/conflicting calls) → implement small slices → self-test ({{GATE}}) → review with
-subagents → verify for real → sync the KB → commit (push when asked). Large, multi-module initiatives
-mature a per-module **FRD** (`knowledgebase/frds/`) before becoming a plan; small changes skip it.
+**sync with the remote → research (first) → write the ticket's plan file → branch → implement small
+slices → write/update the test → self-test (the gate) → review with subagents → verify for real → sync the
+KB → push ONCE → open the PR → AI review cycle (at most 3 rounds) → the developer tests and merges.**
+Larger multi-repo work can use the plugin pipeline: `/softonoma-orchestrator:orchestrate-feature`.
 
 ## 4. Commands
 ```
@@ -31,15 +55,20 @@ mature a per-module **FRD** (`knowledgebase/frds/`) before becoming a plan; smal
 {{OTHER_CMDS}}     # migrate / seed / lint / type-check as applicable
 ```
 
-## 5. Skills & agents (`.claude/`)
-- **Skills**: `feature-workflow`{{, db-change, browser-verify, find-skills — keep what applies}}.
-- **Agents** (read-only review): `context-gatherer`, `security-reviewer`, `quality-reviewer`, `professional-qa`.
-- **Hooks**: block secret/credential writes{{; + any project-specific guard}}.
+## 5. Skills, agents & plugin (`.claude/`)
+- **Skills**: `feature-workflow` (the core loop) · `deep-research` · `pr-review-cycle`{{ · db-change · browser-verify · qa-review · find-skills — keep what applies}}.
+- **Agents** (read-only): `context-gatherer` · `pr-reviewer` · `security-reviewer` · `quality-reviewer` · `professional-qa`.
+- **Hooks**: secret/credential writes are blocked automatically.
+- **Plugin** `softonoma-orchestrator@softonoma` (+ packs: {{PACKS}}), team `.claude/teams/{{TEAM}}.json`.
+  **On any conflict, this file, `.claude/rules/` and the KB win over plugin skills.**
 
 ## 6. Git & docs
-- Identity: {{GIT_IDENTITY}}. Default branch: {{DEFAULT_BRANCH}}. Push/PR: {{PUSH_POLICY}}.
-- Never commit secrets. Keep the KB current in the same change as the code.
+- Identity {{GIT_IDENTITY}}; remote {{REMOTE}}; default branch {{DEFAULT_BRANCH}}.
+- Feature branches from {{BASE_BRANCH}}; push once when the feature is ready; the agent opens the PR and runs
+  the AI review; **the developer tests and merges** (agents never merge).
+- Keep the KB current in the **same change** as the code.
 
 ## 7. For the owner
-State the change in chat — the assistant reads the KB, logs it, decides details, implements, runs the
-gate, verifies, updates the KB, and keeps the app shippable; it asks only when it's genuinely your call.
+State the change in chat; the assistant runs the workflow in §3 end to end and reports a change done only
+after the real check (before it: "implemented and green" plus what is left). It asks only when a decision is
+genuinely yours; otherwise it makes a reasoned assumption and records it.

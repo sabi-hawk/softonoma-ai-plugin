@@ -1,6 +1,7 @@
 ---
 name: commit
 description: Use for every request to commit changes or draft a commit message. Creates Sentry-style conventional commits with issue references.
+license: Apache-2.0
 ---
 <!-- Vendored from getsentry/skills (Apache-2.0) — skills/commit — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

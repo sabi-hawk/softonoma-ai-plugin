@@ -1,6 +1,7 @@
 ---
 name: systematic-debugging
 description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+license: MIT
 ---
 <!-- Vendored from obra/superpowers (MIT) — skills/systematic-debugging — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

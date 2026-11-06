@@ -1,6 +1,7 @@
 ---
 name: requesting-code-review
 description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+license: MIT
 ---
 <!-- Vendored from obra/superpowers (MIT) — skills/requesting-code-review — synced 2026-07-17. Do not edit here; re-sync from upstream. -->
 

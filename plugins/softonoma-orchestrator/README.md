@@ -175,9 +175,9 @@ With the terminal opened at the project root in bypass-permissions mode:
 
 Or just describe the feature in natural language; the lead follows the same pipeline and runs it hands-off to an open PR. The **final PR merge stays with you**; everything up to the open PR is automatic. Quality gates (≥90%/100% coverage, zero blockers, tests green) are enforced by looping, not by asking you.
 
-**Models are pre-configured per agent** — reviewers on `opus` (qa, security), analysts/tests on `sonnet`, infra on `haiku`, and dev/perf/prototype agents `inherit` your session's model. Override in an agent's frontmatter if you want.
+**Models are pre-configured per agent** and tiered to keep Opus use low without losing quality: **Opus** for judgement (planner, qa-reviewer, security-reviewer, code-reviewer, architect-review, incident-responder), **Sonnet** for building and analysis, **Haiku** for plumbing (git-ops, clickup-ops, devops-vercel). Mechanical work (commits, the push, PRs, tracker updates) is routed to the Haiku agents. Override in an agent's frontmatter if you want.
 
-**First time in a repo:** run `/softonoma-orchestrator:agent-team-orc` once to pick a roster and save the team (`.claude/softonoma-team.json`, commit it). After that every `orchestrate-feature`/`review-pr` uses it.
+**First time in a repo:** run `/softonoma-orchestrator:new-project`. It detects the stack, creates `CLAUDE.md` and the standard `.claude/` structure (rules, skills, agents, hooks, knowledge base with change log and lessons, plans with template and carry-over, `docs/SETUP.md`), enables the matching packs and saves the team at `.claude/teams/<name>.json`. `orchestrate-feature` also runs it automatically when the project has no setup. An older setup: `/softonoma-orchestrator:upgrade-project` (add-only). Everything is described in [`WORKFLOW.md`](WORKFLOW.md).
 
 ---
 
@@ -187,9 +187,13 @@ Type these in Claude Code. Run any command **bare** (no args) for a guided wizar
 
 | Command | What it does |
 |---|---|
+| `/softonoma-orchestrator:new-project` | Put a project on the workflow: detect the stack, create the standard structure, enable packs, save the team (never overwrites) |
+| `/softonoma-orchestrator:upgrade-project` | Add only what an older setup is missing |
 | `/softonoma-orchestrator:agent-team-orc` | Team wizard — create / list / show / rename / delete a team for this project |
 | `/softonoma-orchestrator:orchestrate-feature team <name>: <feature + docs>` | Full **autonomous** pipeline: BA/legacy → plan → parallel build → test wave (90%/100% coverage + Playwright) → QA/security/perf reviews → PR → cleanup. Only stops for genuine business decisions and the final merge |
-| `/softonoma-orchestrator:review-pr team <name>: <pr#> [module]` | Multi-agent PR review with KB parity; consolidated BLOCKER/MAJOR/MINOR verdict |
+| `/softonoma-orchestrator:review-pr team <name>: <pr#> [module]` | Multi-agent PR review with KB parity; consolidated BLOCKER/MAJOR/MINOR verdict. Flags `skip-worktree`, `skip-<agent>` |
+| `/softonoma-orchestrator:pr-review-fix <pr#>` | Fix the PR's review comments: only the PR's files, at most 3 rounds, one push per round; never merges |
+| `/softonoma-orchestrator:figma-to-ui <link>` | Figma design → implemented, reviewed UI |
 | `/softonoma-orchestrator:status` | Running teams/agents + task progress (read-only, terminal) |
 | `/softonoma-orchestrator:help` | Full command/skill/script/hook reference |
 
@@ -205,8 +209,10 @@ The lead auto-loads whichever skills fit the task. Notable groups: **Next.js/Rea
 | `node scripts/kb-screenshots.mjs [baseURL]` | Playwright screenshots for the product KB |
 
 ### Hooks (always on)
-- **worktree-guard** — blocks code edits on main/develop in the primary checkout (config/docs exempt).
-- **task-gate** — blocks task completion if lint/typecheck fail.
+- **worktree-guard** — blocks code edits on main/master/develop/staging/production in the primary checkout (docs, `.claude/`, `plans/`, `*.md` exempt; Windows paths supported since 0.24.0). Opt a repo out: `git config softonoma.worktreeGuard off`.
+- **block-secret-writes** — blocks writing credentials and `.env` files.
+- **task-gate** — blocks task completion if lint/typecheck (JS/TS), compile/tests (Python, using an interpreter that actually runs) or pint (PHP) fail.
+- **onboard-check** (session start) — in a project with no `CLAUDE.md` and no `.claude/`, reminds Claude to offer `new-project`; silent everywhere else.
 
 ---
 
@@ -217,11 +223,7 @@ The lead auto-loads whichever skills fit the task. Notable groups: **Next.js/Rea
 
 ## Layout expected in each project repo
 
-```
-knowledge-base/<module>/   # parity contract (kb-builder skill format)
-plans/upcoming|in-progress|done/
-CLAUDE.md                  # project conventions — teammates load it automatically
-```
+The standard structure `new-project` creates is in [`WORKFLOW.md`](WORKFLOW.md) §2 (`.claude/plans/{backlog,upcoming,inprogress,done}/`, `.claude/knowledgebase/`, …). Older projects with `plans/{upcoming,in-progress,done}/` and `knowledge-base/<module>/` at the repo root keep working: the pipeline resolves whichever layout exists.
 
 ## Notes
 
@@ -234,3 +236,24 @@ CLAUDE.md                  # project conventions — teammates load it automatic
 Core pipeline: ba-analyst, legacy-analyst, planner, frontend-dev, backend-dev, qa-reviewer, security-reviewer, performance-reviewer.
 On-demand: prototype-builder (Figma/HTML prototypes), mobile-dev (React Native/Expo iOS+Android), python-backend-dev (FastAPI), integrations-dev (Paymob/WebEngage/LiteAPI), devops-vercel (infra, log drains, deploys), unit-test-engineer + e2e-playwright (test wave), db-performance-reviewer (DB/API performance gate on Prisma/Postgres work — run after every implementation wave that touches a schema, query, or endpoint).
 The lead spawns only what the feature needs — 3–5 active teammates max.
+Specialists in the core: architect-review, debugger, error-detective, incident-responder, test-automator, tdd-orchestrator, accessibility-expert, ui-ux-designer, api-documenter, docs-architect; Haiku plumbing: git-ops, clickup-ops (ClickUp or Jira). 30 agents and 102 skills in the core.
+
+## Optional packs (enable per project)
+
+| Pack | Agents | Skills | For |
+|---|---|---|---|
+| softonoma-languages | 13 | 3 | Go, Rust, Java, C#, PHP, Python/Django, GraphQL, shell |
+| softonoma-frontend-frameworks | 0 | 36 | Angular, Vue/Nuxt, Svelte, Astro, Vite, pnpm/Turborepo |
+| softonoma-mobile | 2 | 22 | React Native / Expo / EAS |
+| softonoma-flutter | 1 | 22 | Flutter / Dart |
+| softonoma-cloud | 6 | 37 | AWS, Azure, GCP, Terraform, Docker, Kubernetes, GitHub Actions |
+| softonoma-databases | 2 | 13 | MariaDB, MySQL/Vitess, Oracle, Aurora, DynamoDB |
+| softonoma-data-ai | 4 | 0 | LLM, ML, data pipelines |
+| softonoma-seo | 6 | 14 | marketing websites |
+| softonoma-ops | 0 | 14 | Axiom, ClickUp CU lifecycle, `/kb` viewer |
+
+Total with the core: **64 agents, 263 skills**. Install one with `/plugin install <pack>@softonoma` then `/reload-plugins`; `new-project` enables them from the detected stack. Every enabled agent and skill adds its description to every session, which is why the rarely used ones are packs.
+
+## Provenance
+
+The packs and the 0.24.0 core additions come from the Alfred orchestrator 0.21.0 (MIT). Vendored skills keep their own `license:` field and "Vendored from" note; see [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md).

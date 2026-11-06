@@ -5,6 +5,7 @@ metadata:
   author: vercel
   version: "1.0.0"
   argument-hint: <file-or-pattern>
+license: MIT
 ---
 <!-- Vendored from vercel-labs/agent-skills — synced 2026-07-16 -->
 
