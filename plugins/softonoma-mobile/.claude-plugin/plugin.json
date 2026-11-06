@@ -1,6 +1,6 @@
 {
   "name": "softonoma-mobile",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "description": "Mobile specialists (iOS, React Native) and the full Expo/EAS/React Native skill set. Enable in React Native / Expo projects (the core mobile-dev agent and expo-react-native skill stay in the core).",
   "author": {
     "name": "Softonoma"

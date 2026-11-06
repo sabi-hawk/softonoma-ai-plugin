@@ -1,6 +1,6 @@
 # softonoma-ops
 
-Optional pack for **softonoma-orchestrator** (version 0.24.0). Operations add-ons: Axiom log/metrics skills (triage, alerting, dashboards), the ClickUp CU lifecycle skills (raise-cu, pickup-cu, signoff-cu, verify-cu) and the kb skill with its /kb viewer indexer. Enable in projects using Axiom, the ClickUp lifecycle, or an in-app /kb.
+Optional pack for **softonoma-orchestrator** (version 0.25.0). Operations add-ons: Axiom log/metrics skills (triage, alerting, dashboards), the ClickUp CU lifecycle skills (raise-cu, pickup-cu, signoff-cu, verify-cu) and the kb skill with its /kb viewer indexer. Enable in projects using Axiom, the ClickUp lifecycle, or an in-app /kb.
 
 ## Enable it
 ```

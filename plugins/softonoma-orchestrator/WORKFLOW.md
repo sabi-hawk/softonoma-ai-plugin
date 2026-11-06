@@ -72,11 +72,11 @@ A multi-repo product gets ONE shared `.claude/` in a workspace repo that holds t
 4. **Branch** from the base branch.
 5. **Implement in small slices**; each subagent brief names the files it may edit.
 6. **Test first**, see it fail once, then **the gate** (type-check, lint, tests, build).
-7. **Review with subagents**, tiered by risk.
+7. **Reviews are off by default** (0.25.0): reviewer agents and the PR-review cycle run only when asked (`with-reviews`, or the project's CLAUDE.md turns them on).
 8. **Verify for real**: the browser for UI, the response for an API. Until then it is "implemented and green".
 9. **Sync the KB** and write the `07-change-log.md` entry, in the same change.
-10. **Push once**, open the PR, run the **AI review cycle** (at most 3 rounds).
-11. **The developer tests and merges.** Agents never merge. On merge the plan moves to `done/`.
+10. **Push once**, open the PR.
+11. **The agent merges into the integration branch** once the gate and the browser check are green on the merged head, and deploys the non-production environments. Production waits for the human's go. On merge the plan moves to `done/`.
 
 ---
 
@@ -122,4 +122,4 @@ picks them from what it detects (`package.json`, `pubspec.yaml`, `*.tf`, `go.mod
   `git config softonoma.worktreeGuard off`.
 - The **secret hook** blocks writes of credentials and `.env` files.
 - The **task gate** runs lint/typecheck (JS/TS), compile/tests (Python) or pint (PHP) when a task completes.
-- **Read-only agents** never change git state; **agents never merge**; the developer decides releases.
+- **Read-only agents** never change git state; agents merge only into the integration branch; **the human decides production releases**.

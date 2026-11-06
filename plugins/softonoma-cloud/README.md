@@ -1,6 +1,6 @@
 # softonoma-cloud
 
-Optional pack for **softonoma-orchestrator** (version 0.24.0). Cloud and infrastructure: AWS, Azure, Google Cloud, Terraform, Docker and GitHub Actions skills, plus cloud, Kubernetes, Terraform, deployment, observability and troubleshooting agents. Enable in projects hosted on those platforms.
+Optional pack for **softonoma-orchestrator** (version 0.25.0). Cloud and infrastructure: AWS, Azure, Google Cloud, Terraform, Docker and GitHub Actions skills, plus cloud, Kubernetes, Terraform, deployment, observability and troubleshooting agents. Enable in projects hosted on those platforms.
 
 ## Enable it
 ```

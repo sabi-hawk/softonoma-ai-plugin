@@ -1,6 +1,6 @@
 ---
 name: feature-workflow
-description: The end-to-end loop for any feature/bug/change on {{PROJECT_NAME}} — sync, research first, write the ticket's plan file, branch, implement small slices, test first, self-test, review with subagents, verify for real, sync the knowledge base, push once, open the PR, run the AI review cycle, hand over for test and merge. Use whenever starting non-trivial work.
+description: The end-to-end loop for any feature/bug/change on {{PROJECT_NAME}} — sync, research first, write the ticket's plan file, branch, implement small slices, test first, self-test, verify for real, sync the knowledge base, push once, open the PR, merge into the base branch and deploy (reviews off by default). Use whenever starting non-trivial work.
 ---
 
 # Feature Workflow — {{PROJECT_NAME}}
@@ -43,10 +43,10 @@ access control in the same change.}} The smallest correct change; match existing
 Write or update the test for the changed behaviour BEFORE finishing the slice, see it fail once (break the
 code a moment), then the gate: {{GATE}} (type-check → lint → tests → build). Loop until green.
 
-## 6. Review with subagents
-Tier by risk: a change to a RULE gets the case table and an independent reviewer; UI/copy changes get a
-design pass plus the lead's diff read. For non-trivial changes spawn **security-reviewer** and
-**quality-reviewer** in parallel; milestones add **professional-qa** (the `qa-review` skill). Fix blockers first.
+## 6. Reviews — off by default
+No reviewer agents and no PR-review cycle before a merge unless the developer asks (then: **security-reviewer**
+and **quality-reviewer** in parallel; **professional-qa** for milestones, via the `qa-review` skill). The
+builder's own discipline replaces them: the case table, the test seen failing, the gate, a read of its own diff.
 
 ## 7. Verify for real
 {{How to actually exercise the change: drive the UI in a real browser and read the screenshot / hit the API and
@@ -61,7 +61,9 @@ Update the module doc under `.claude/knowledgebase/`, `.claude/database/database
 Commit per slice (`Co-Authored-By:` trailer). Push **once**, when the feature is ready and green. Open the PR
 into `{{BASE_BRANCH}}` with what changed, why, and how it was verified.
 
-## 10. PR review cycle — `pr-review-cycle` skill
-The **pr-reviewer** agent's findings are posted on the PR, fixed, pushed once per round and resolved; at
-most 3 rounds. Hand the developer the PR URL: **they test and merge** (agents never merge). On merge the plan
-file moves to `.claude/plans/done/` with an Outcome.
+## 10. Merge and deploy
+Merge the PR into `{{BASE_BRANCH}}` once the gate is green on the head merged with it, then deploy the
+non-production environments and check the deploy. A production merge or release waits for the developer's
+go. On merge the plan file moves to `.claude/plans/done/` with an Outcome. The `pr-review-cycle` skill runs
+only when the developer asks for a review.
+

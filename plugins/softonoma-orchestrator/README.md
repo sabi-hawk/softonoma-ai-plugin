@@ -162,6 +162,19 @@ chmod +x ~/softonoma-ai-plugin/plugins/softonoma-orchestrator/scripts/*.sh
 
 ---
 
+## Reviews: optional, off by default (0.25.0)
+
+Since 0.25.0 the pipeline does **not** run a review step before a merge: no reviewer wave
+(`code-reviewer`, `qa-reviewer`, `security-reviewer`, `performance-reviewer`), no PR-review cycle, no
+manual review gate. They delayed delivery to staging, UAT and production. The agent merges its own PR into
+the integration branch once lint, type-check, tests, build and the browser check are green on the merged
+head, and deploys the non-production environments; **production still waits for the human's go**.
+
+The reviewers are all still in the plugin. Turn them back on when you want them:
+- **One run:** `/softonoma-orchestrator:orchestrate-feature <feature> with-reviews` (add `skip-<agent>` to drop one).
+- **One PR:** `/softonoma-orchestrator:review-pr <pr#>` or `/softonoma-orchestrator:pr-review-fix <pr#>`.
+- **A whole project:** say so in its `CLAUDE.md` (for example "Reviews are ON: run the review wave before every merge").
+
 ## Running a feature
 
 > [!IMPORTANT]

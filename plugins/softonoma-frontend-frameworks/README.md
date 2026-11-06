@@ -1,6 +1,6 @@
 # softonoma-frontend-frameworks
 
-Optional pack for **softonoma-orchestrator** (version 0.24.0). Angular, Vue/Pinia/VueUse, Nuxt, Svelte, Astro, Vite/Vitest/VitePress and JS monorepo tooling (pnpm, Turborepo, tsdown, UnoCSS, Nitro) skills. Enable in projects built on those frameworks.
+Optional pack for **softonoma-orchestrator** (version 0.25.0). Angular, Vue/Pinia/VueUse, Nuxt, Svelte, Astro, Vite/Vitest/VitePress and JS monorepo tooling (pnpm, Turborepo, tsdown, UnoCSS, Nitro) skills. Enable in projects built on those frameworks.
 
 ## Enable it
 ```

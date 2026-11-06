@@ -45,9 +45,9 @@ That's it. The result is a project that any future Claude session can pick up wi
   becoming plans, and `reference/` holds origin/provenance. Updated in the *same change* as the code —
   so context is never lost between sessions. (Schema lives in `.claude/database/`.)
 - **A repeatable loop** (the `feature-workflow` skill): capture → ground in the KB → decide →
-  implement small slices → self-test → review with subagents → verify in a browser → sync the KB → commit.
+  implement small slices → self-test → verify in a browser → sync the KB → commit → PR → merge (reviews optional, off by default).
 - **Guardrails as code**: hooks block secret writes; rules encode the non-negotiables; review agents
-  catch regressions before commit.
+  are available on request (off by default).
 - **Lightweight by default.** No FRDs/tickets required for everyday changes — requirements come from
   the owner in chat. Add the optional plan lifecycle for multi-step initiatives, and **per-module FRDs**
   (`knowledgebase/frds/`) only for large, multi-module initiatives that need requirements agreed before code.
